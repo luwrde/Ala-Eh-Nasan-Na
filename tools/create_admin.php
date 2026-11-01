@@ -31,12 +31,9 @@ if (strlen($password) < 12 || !hash_equals($password, $confirmation)) {
     exit(1);
 }
 
-$insert = db()->prepare(
-    'INSERT INTO admins (email, password_hash) VALUES (:email, :password_hash)'
-);
-$insert->execute([
-    'email' => $email,
-    'password_hash' => password_hash($password, PASSWORD_DEFAULT),
-]);
+if (!create_first_admin($email, $password)) {
+    fwrite(STDERR, "An admin account already exists; only one admin is allowed.\n");
+    exit(1);
+}
 
 fwrite(STDOUT, "Admin account created for {$email}.\n");

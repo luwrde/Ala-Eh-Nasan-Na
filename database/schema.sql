@@ -31,6 +31,14 @@ CREATE TABLE IF NOT EXISTS admins (
     UNIQUE KEY uq_admins_email (email)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS admin_registration_lock (
+    id TINYINT UNSIGNED NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT chk_admin_registration_lock_singleton CHECK (id = 1)
+) ENGINE=InnoDB;
+
+INSERT IGNORE INTO admin_registration_lock (id) VALUES (1);
+
 CREATE TABLE IF NOT EXISTS login_rate_limits (
     bucket_key CHAR(64) NOT NULL,
     attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,

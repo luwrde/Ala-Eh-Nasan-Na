@@ -10,9 +10,9 @@ A minimal PHP 8.1+ and MySQL driver registration/login application. It uses PDO 
 4. Configure the web server document root to `public/`; do not expose the project root, `app/`, or `database/` as web content. The root `.htaccess` blocks direct HTTP access to `.env` when using Apache.
 5. Ensure PHP has `pdo_mysql` and `mbstring` enabled.
 6. Serve using your PHP web server, for example `php -S 127.0.0.1:8000 -t public` after configuring the environment.
-7. Create the administrator table by applying `database/schema.sql`, then create an admin account from the project root with `php tools/create_admin.php admin@example.com`. The local CLI asks you to enter and confirm a password of at least 12 characters. Admin credentials are stored as password hashes and are separate from driver accounts.
+7. Apply `database/schema.sql`, then open `public/admin-login.php` and choose **Create the first admin account**. First-admin registration is closed automatically after one account has been created. Admin credentials are stored as password hashes and are separate from driver accounts. Alternatively, create the first admin from the project root with `php tools/create_admin.php admin@example.com`.
 
-Open `public/admin-login.php` to sign in, then review pending applications in the admin dashboard. Approval and rejection actions require an authenticated admin session and CSRF token.
+Open `public/admin-login.php` to sign in, then review pending applications in the admin dashboard. Approval and rejection actions require an authenticated admin session and CSRF token. The optional CLI setup command asks for the password twice; input may be visible in the terminal.
 
 New driver records always start with `verification_status = 'pending_verification'`. Login lets a driver see that status, but the dashboard explicitly treats pending accounts as not yet approved. Any future driver-only operation must independently require `verified`; hiding a link is not authorization.
 

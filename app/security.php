@@ -121,3 +121,43 @@ function clear_login_attempts(PDO $pdo, array $keys): void
     $delete = $pdo->prepare("DELETE FROM login_rate_limits WHERE bucket_key IN ($placeholders)");
     $delete->execute($keys);
 }
+
+function first_admin_registration_available(): bool
+{
+    return (int) db()->query('SELECT COUNT(*) FROM admins')->fetchColumn() === 0;
+}
+
+function create_first_admin(string $email, string $password): bool
+{
+    $pdo = db();
+    $pdo->beginTransaction();
+
+    try {
+        $guard = $pdo->query(
+            'SELECT id FROM admin_registration_lock WHERE id = 1 FOR UPDATE'
+        )->fetchColumn();
+        if ($guard === false) {
+            throw new RuntimeException('The admin registration lock has not been initialized. Apply database/schema.sql.');
+        }
+
+        if ((int) $pdo->query('SELECT COUNT(*) FROM admins')->fetchColumn() !== 0) {
+            $pdo->rollBack();
+            return false;
+        }
+
+        $insert = $pdo->prepare(
+            'INSERT INTO admins (email, password_hash) VALUES (:email, :password_hash)'
+        );
+        $insert->execute([
+            'email' => $email,
+            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+        ]);
+        $pdo->commit();
+        return true;
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $exception;
+    }
+}

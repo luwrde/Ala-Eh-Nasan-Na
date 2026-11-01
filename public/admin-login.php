@@ -74,6 +74,9 @@ page_start('Admin sign in', 'admin-login');
       <button class="button button-primary button-submit" type="submit">Sign in to admin <span aria-hidden="true">→</span></button>
     </form>
     <div class="form-security"><span aria-hidden="true">◈</span> Admin accounts are separate from driver accounts.</div>
+    <?php if (first_admin_registration_available()): ?>
+    <p class="form-switch">Setting up the portal? <a href="admin-register.php">Create the first admin account</a></p>
+    <?php endif; ?>
   </div>
 </section>
 <?php page_end(); ?>
