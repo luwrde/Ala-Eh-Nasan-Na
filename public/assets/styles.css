@@ -7,6 +7,7 @@
   --blue-600: #3478e5;
   --blue-100: #e8f0ff;
   --blue-50: #f3f7ff;
+  --page-background: #f1f5fb;
   --ink: #172b4d;
   --muted: #71809a;
   --line: #e6ebf3;
@@ -16,7 +17,7 @@
 
 * { box-sizing: border-box; }
 
-html { min-width: 320px; background: #f7f9fd; scroll-behavior: smooth; }
+html { min-width: 320px; background: var(--page-background); scroll-behavior: smooth; }
 
 body {
   min-height: 100vh;
@@ -24,6 +25,10 @@ body {
   display: flex;
   flex-direction: column;
   color: var(--ink);
+  background:
+    radial-gradient(ellipse at 82% 13%, rgb(216 230 255 / 48%), transparent 37rem),
+    radial-gradient(ellipse at 8% 68%, rgb(226 236 251 / 42%), transparent 34rem),
+    var(--page-background);
   font-family: "Poppins", sans-serif;
   font-size: 14px;
   line-height: 1.7;
