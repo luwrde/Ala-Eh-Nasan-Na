@@ -16,6 +16,35 @@ Open `public/admin-login.php` to sign in, then review pending applications in th
 
 Drivers can manage one jeepney profile at `public/jeepney-profile.php`. The signed-in driver's session determines ownership; the API never accepts a driver ID to select whose vehicle is edited. `GET /api/vehicle.php` returns the signed-in driver's profile, and `PUT /api/vehicle.php` accepts JSON containing `plate_number`, `capacity`, and `route_assignment`, with the page's CSRF token in the `X-CSRF-Token` header. Philippine plate formats such as `ABC 1234` and `123 ABC` are accepted. Each submission is stored as pending changes; verified details remain unchanged until an administrator approves the update in the vehicle review queue.
 
+Verified drivers can view their assigned route at `public/driver-route.php` and update their own email and phone at `public/driver-profile.php`. Contact updates are validated, CSRF-protected, and scoped to the signed-in driver's database ID. Route names in `routes.route_name` must exactly match the approved `jeepney_profiles.route_assignment`; ordered location details are stored in `RouteStops`. Each `RouteStops` row includes a unique sequence number, location name, area, landmark, location type (`terminal`, `boarding_point`, `stop`, or `destination`), and optional implementation note. Apply `database/schema.sql` to create the tables. Seed the route using the exact approved route-assignment name, followed by one `RouteStops` row for each location in travel order. Mark only confirmed formal terminals and the destination with their corresponding types; the driver view reads these labels from the table.
+
+The client supplied these six initial location candidates; they are documented here without assigning a route direction, sequence, terminal role, or destination that has not been confirmed:
+
+| Area / perspective | Named location | Client-provided landmark | Implementation note |
+|---|---|---|---|
+| Batangas City | Total Gas Station | DJPMM Access Rd. | Exact entrance/boarding point to verify |
+| Batangas City | Diversion Road | In front of Kwatog’s, Brgy. Bolbok | Roadside point; verify safe/legal boarding |
+| Batangas City | Grand Terminal | Batangas City | Verify exact map pin and loading bay |
+| Mabini — POV from Mabini | Mabini Tourism Triangle | Left side, F. Castillo Blvd | Preserve Mabini-side orientation |
+| Mabini — POV from Mabini | In front of 7/11 Mabini | Left side, F. Castillo Blvd | Preserve Mabini-side orientation |
+| Mabini — POV from Mabini | In front of Iconails Beauty Lounge | Mabini Circumferential Rd | Verify road side and exact map pin |
+
+Before inserting these candidates into `RouteStops`, confirm the exact route name used by the approved vehicle assignment, each travel direction and stop sequence, and which locations are formal terminals or destinations. This avoids presenting unverified roadside points as authoritative route guidance.
+
+Seed template (replace the placeholders only after confirming the route details):
+
+```sql
+INSERT INTO routes (route_name) VALUES ('<EXACT_APPROVED_ROUTE_ASSIGNMENT>');
+SET @route_id = LAST_INSERT_ID();
+
+INSERT INTO RouteStops (
+    route_id, stop_sequence, location_name, area_label, landmark, stop_type, implementation_note
+) VALUES
+    (@route_id, 1, '<ORIGIN TERMINAL>', '<AREA>', '<LANDMARK>', 'terminal', '<NOTE>'),
+    (@route_id, 2, '<INTERMEDIATE STOP>', '<AREA>', '<LANDMARK>', 'stop', '<NOTE>'),
+    (@route_id, 3, '<DESTINATION>', '<AREA>', '<LANDMARK>', 'destination', '<NOTE>');
+```
+
 New driver records always start with `verification_status = 'pending_verification'`. Login lets a driver see that status, but the dashboard explicitly treats pending accounts as not yet approved. Any future driver-only operation must independently require `verified`; hiding a link is not authorization.
 
 ## Driver verification options

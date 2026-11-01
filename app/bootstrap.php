@@ -137,7 +137,9 @@ HTML;
         echo '<form class="nav-logout" method="post" action="admin-logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
     } elseif (current_driver() !== null) {
         echo '<a href="dashboard.php">My application</a>';
+        echo '<a href="driver-route.php">My route</a>';
         echo '<a href="jeepney-profile.php">My jeepney</a>';
+        echo '<a href="driver-profile.php">My profile</a>';
         echo '<form class="nav-logout" method="post" action="logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
     } else {
         echo '<a href="login.php">Log in</a>';

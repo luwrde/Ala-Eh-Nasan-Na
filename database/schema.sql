@@ -46,6 +46,31 @@ CREATE TABLE IF NOT EXISTS jeepney_profiles (
         FOREIGN KEY (driver_id) REFERENCES drivers (id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS routes (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    route_name VARCHAR(120) NOT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_routes_route_name (route_name),
+    KEY idx_routes_active_name (is_active, route_name)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS RouteStops (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    route_id BIGINT UNSIGNED NOT NULL,
+    stop_sequence SMALLINT UNSIGNED NOT NULL,
+    location_name VARCHAR(120) NOT NULL,
+    area_label VARCHAR(120) NOT NULL,
+    landmark VARCHAR(255) NOT NULL,
+    stop_type ENUM('terminal', 'boarding_point', 'stop', 'destination') NOT NULL DEFAULT 'stop',
+    implementation_note VARCHAR(500) NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_route_stops_sequence (route_id, stop_sequence),
+    CONSTRAINT fk_route_stops_route
+        FOREIGN KEY (route_id) REFERENCES routes (id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS admins (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     email VARCHAR(254) NOT NULL,

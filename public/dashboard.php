@@ -55,6 +55,16 @@ page_start('Application status', 'dashboard');
     <div><h2>Your jeepney</h2><p>Add or update your plate number, passenger capacity, and route assignment.</p></div>
     <a class="button button-outline" href="jeepney-profile.php">Manage vehicle <span aria-hidden="true">→</span></a>
   </section>
+  <section class="driver-vehicle-link">
+    <div class="driver-vehicle-link-icon route-link-icon" aria-hidden="true">↗</div>
+    <div><h2>Your assigned route</h2><p>See your approved route and stops in travel order.</p></div>
+    <a class="button button-outline" href="driver-route.php">View route <span aria-hidden="true">→</span></a>
+  </section>
+  <section class="driver-vehicle-link">
+    <div class="driver-vehicle-link-icon profile-link-icon" aria-hidden="true">◎</div>
+    <div><h2>Your contact information</h2><p>Update your account email and phone number.</p></div>
+    <a class="button button-outline" href="driver-profile.php">Edit profile <span aria-hidden="true">→</span></a>
+  </section>
   <div class="dashboard-footer-note"><span aria-hidden="true">◈</span> Your account information is private and protected.</div>
 </section>
 <?php page_end(); ?>
