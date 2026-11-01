@@ -109,6 +109,9 @@ function page_start(string $title, string $page = ''): void
 {
     $safeTitle = h($title);
     $safePage = h($page);
+    $isAuthenticated = current_driver() !== null || current_admin() !== null;
+    $layoutClass = $isAuthenticated ? 'has-sidebar' : '';
+    
     echo <<<HTML
 <!doctype html>
 <html lang="en">
@@ -122,7 +125,122 @@ function page_start(string $title, string $page = ''): void
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body class="page-{$safePage}">
+<body class="page-{$safePage} {$layoutClass}">
+HTML;
+    
+    if ($isAuthenticated) {
+        // Sidebar layout for authenticated users
+        echo <<<HTML
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a class="sidebar-brand" href="index.php" aria-label="Ala-Eh Driver Portal home">
+        <span class="sidebar-brand-mark" aria-hidden="true">A</span>
+        <span class="sidebar-brand-name">Ala-Eh<span>Driver Portal</span></span>
+      </a>
+      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+        <span class="toggle-icon"></span>
+      </button>
+    </div>
+    <nav class="sidebar-nav" aria-label="Main navigation">
+HTML;
+        
+        if (current_admin() !== null) {
+            $driver = current_admin();
+            echo <<<HTML
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">A</div>
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{$driver['full_name']}</span>
+          <span class="sidebar-user-role">Administrator</span>
+        </div>
+      </div>
+      <div class="sidebar-menu">
+        <a href="index.php" class="sidebar-link">
+          <span class="sidebar-link-icon">🏠</span>
+          <span class="sidebar-link-text">Home</span>
+        </a>
+        <a href="admin-dashboard.php" class="sidebar-link">
+          <span class="sidebar-link-icon">📊</span>
+          <span class="sidebar-link-text">Admin Dashboard</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <form method="post" action="admin-logout.php">
+HTML;
+        echo csrf_field();
+        echo <<<HTML
+          <button class="sidebar-logout" type="submit">
+            <span class="sidebar-link-icon">🚪</span>
+            <span class="sidebar-link-text">Log out</span>
+          </button>
+        </form>
+      </div>
+HTML;
+        } elseif (current_driver() !== null) {
+            $driver = current_driver();
+            $initials = strtoupper(substr($driver['full_name'], 0, 1));
+            echo <<<HTML
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">{$initials}</div>
+        <div class="sidebar-user-info">
+          <span class="sidebar-user-name">{$driver['full_name']}</span>
+          <span class="sidebar-user-role">Driver</span>
+        </div>
+      </div>
+      <div class="sidebar-menu">
+        <a href="index.php" class="sidebar-link">
+          <span class="sidebar-link-icon">🏠</span>
+          <span class="sidebar-link-text">Home</span>
+        </a>
+        <a href="dashboard.php" class="sidebar-link">
+          <span class="sidebar-link-icon">📋</span>
+          <span class="sidebar-link-text">My application</span>
+        </a>
+        <a href="driver-route.php" class="sidebar-link">
+          <span class="sidebar-link-icon">🗺️</span>
+          <span class="sidebar-link-text">My route</span>
+        </a>
+        <a href="jeepney-profile.php" class="sidebar-link">
+          <span class="sidebar-link-icon">🚌</span>
+          <span class="sidebar-link-text">My jeepney</span>
+        </a>
+        <a href="driver-profile.php" class="sidebar-link">
+          <span class="sidebar-link-icon">👤</span>
+          <span class="sidebar-link-text">My profile</span>
+        </a>
+      </div>
+      <div class="sidebar-footer">
+        <form method="post" action="logout.php">
+HTML;
+        echo csrf_field();
+        echo <<<HTML
+          <button class="sidebar-logout" type="submit">
+            <span class="sidebar-link-icon">🚪</span>
+            <span class="sidebar-link-text">Log out</span>
+          </button>
+        </form>
+      </div>
+HTML;
+        }
+        
+        echo <<<HTML
+    </nav>
+  </aside>
+  <div class="app-content">
+    <header class="top-header">
+      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <h1 class="page-title">{$safeTitle}</h1>
+    </header>
+    <main class="site-main" id="main-content">
+HTML;
+    } else {
+        // Regular header for non-authenticated pages
+        echo <<<HTML
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href="index.php" aria-label="Ala-Eh Driver Portal home">
@@ -131,31 +249,71 @@ function page_start(string $title, string $page = ''): void
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.php">Home</a>
-HTML;
-    if (current_admin() !== null) {
-        echo '<a href="admin-dashboard.php">Admin dashboard</a>';
-        echo '<form class="nav-logout" method="post" action="admin-logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
-    } elseif (current_driver() !== null) {
-        echo '<a href="dashboard.php">My application</a>';
-        echo '<a href="driver-route.php">My route</a>';
-        echo '<a href="jeepney-profile.php">My jeepney</a>';
-        echo '<a href="driver-profile.php">My profile</a>';
-        echo '<form class="nav-logout" method="post" action="logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
-    } else {
-        echo '<a href="login.php">Log in</a>';
-        echo '<a class="button button-primary button-small" href="register.php">Get started <span aria-hidden="true">→</span></a>';
-    }
-    echo <<<HTML
+      <a href="login.php">Log in</a>
+      <a class="button button-primary button-small" href="register.php">Get started <span aria-hidden="true">→</span></a>
     </nav>
   </div>
 </header>
 <main class="site-main" id="main-content">
 HTML;
+    }
 }
 
 function page_end(): void
 {
-    echo <<<HTML
+    $isAuthenticated = current_driver() !== null || current_admin() !== null;
+    
+    if ($isAuthenticated) {
+        echo <<<HTML
+    </main>
+  </div>
+</div>
+<script>
+// Sidebar toggle functionality
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const mobileToggle = document.getElementById('mobile-toggle');
+
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+  });
+}
+
+if (mobileToggle) {
+  mobileToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('mobile-open');
+  });
+}
+
+// Restore sidebar state
+if (localStorage.getItem('sidebarCollapsed') === 'true') {
+  sidebar.classList.add('collapsed');
+}
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
+    if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+      sidebar.classList.remove('mobile-open');
+    }
+  }
+});
+
+// Active link highlighting
+const currentPath = window.location.pathname.split('/').pop();
+document.querySelectorAll('.sidebar-link').forEach(link => {
+  if (link.getAttribute('href') === currentPath) {
+    link.classList.add('active');
+  }
+});
+</script>
+</body>
+</html>
+HTML;
+    } else {
+        echo <<<HTML
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
@@ -166,4 +324,5 @@ function page_end(): void
 </body>
 </html>
 HTML;
+    }
 }
