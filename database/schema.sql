@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS driver_portal
+CREATE DATABASE IF NOT EXISTS ala_eh
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE driver_portal;
+USE ala_eh;
 
 CREATE TABLE IF NOT EXISTS drivers (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

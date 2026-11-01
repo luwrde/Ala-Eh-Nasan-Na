@@ -51,19 +51,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-page_start('Driver registration');
+page_start('Driver registration', 'register');
 ?>
-<h1>Driver registration</h1>
-<p>Your account will be marked <span class="status">pending verification</span> after registration.</p>
-<?php if ($error !== ''): ?><p class="message" role="alert"><?= h($error) ?></p><?php endif; ?>
-<form method="post" action="register.php" autocomplete="on">
-  <?= csrf_field() ?>
-  <label>Full name <input name="full_name" required maxlength="120" autocomplete="name" value="<?= h((string) ($_POST['full_name'] ?? '')) ?>"></label>
-  <label>Email <input type="email" name="email" required maxlength="254" autocomplete="email" value="<?= h((string) ($_POST['email'] ?? '')) ?>"></label>
-  <label>Phone <input type="tel" name="phone" required maxlength="32" autocomplete="tel" value="<?= h((string) ($_POST['phone'] ?? '')) ?>"></label>
-  <label>Driver license number <input name="license_number" required maxlength="64" autocomplete="off" value="<?= h((string) ($_POST['license_number'] ?? '')) ?>"></label>
-  <label>Password (at least 12 characters) <input type="password" name="password" required minlength="12" autocomplete="new-password"></label>
-  <label>Confirm password <input type="password" name="password_confirm" required minlength="12" autocomplete="new-password"></label>
-  <button type="submit">Register</button>
-</form>
+<section class="registration-layout">
+  <div class="registration-heading">
+    <span class="eyebrow"><span class="eyebrow-dot"></span> TAKE THE FIRST STEP</span>
+    <h1>Let’s get your<br><span>journey started.</span></h1>
+    <p>Set up your driver account to submit your information and follow your application progress.</p>
+    <div class="registration-progress"><span class="progress-number">01</span><span class="progress-line"></span><span class="progress-label">CREATE YOUR ACCOUNT</span></div>
+  </div>
+  <div class="registration-card">
+    <div class="form-heading">
+      <span class="form-kicker">YOUR DETAILS</span>
+      <h2>Create your account</h2>
+      <p>Complete each field to get started.</p>
+    </div>
+    <div class="status-note"><span class="status-note-icon" aria-hidden="true">i</span><span>Your application will be marked <strong>pending verification</strong> after registration.</span></div>
+    <?php if ($error !== ''): ?><p class="message message-error" role="alert"><?= h($error) ?></p><?php endif; ?>
+    <form class="form-stack registration-form" method="post" action="register.php" autocomplete="on">
+      <?= csrf_field() ?>
+      <label class="field-full">Full name <input name="full_name" required maxlength="120" autocomplete="name" placeholder="Your full name" value="<?= h((string) ($_POST['full_name'] ?? '')) ?>"></label>
+      <label>Email address <input type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com" value="<?= h((string) ($_POST['email'] ?? '')) ?>"></label>
+      <label>Phone number <input type="tel" name="phone" required maxlength="32" autocomplete="tel" placeholder="Your phone number" value="<?= h((string) ($_POST['phone'] ?? '')) ?>"></label>
+      <label class="field-full">Driver license number <input name="license_number" required maxlength="64" autocomplete="off" placeholder="Enter your license number" value="<?= h((string) ($_POST['license_number'] ?? '')) ?>"></label>
+      <label>Password <input type="password" name="password" required minlength="12" autocomplete="new-password" placeholder="At least 12 characters"><span class="field-hint">Use at least 12 characters.</span></label>
+      <label>Confirm password <input type="password" name="password_confirm" required minlength="12" autocomplete="new-password" placeholder="Re-enter your password"></label>
+      <button class="button button-primary button-submit field-full" type="submit">Create account <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="form-switch">Already have an account? <a href="login.php">Sign in</a></p>
+    <div class="form-security"><span aria-hidden="true">◈</span> Your information is protected and kept private.</div>
+  </div>
+</section>
 <?php page_end(); ?>

@@ -4,10 +4,10 @@ A minimal PHP 8.1+ and MySQL driver registration/login application. It uses PDO 
 
 ## Setup
 
-1. Create a MySQL user/database, then apply `database/schema.sql` (it creates `driver_portal`).
-2. Set `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` in the PHP process environment. `.env.example` documents the variables; PHP does not load it automatically.
+1. Create a MySQL user/database, then apply `database/schema.sql` (it creates `ala_eh`).
+2. Copy `.env.example` to `.env`, then set `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`. The application loads `.env` for local development; process environment variables take precedence. For a default local XAMPP installation with an empty root password, use `DB_USER=root` and leave `DB_PASSWORD` blank. Only use the root account for local development; production must use a dedicated least-privilege MySQL account.
 3. Keep `SESSION_COOKIE_SECURE=true` and serve the app over HTTPS in production. For local HTTP-only development, set it to `false` locally, then restore `true` before deployment.
-4. Configure the web server document root to `public/`; do not expose `app/` or `database/` as web content.
+4. Configure the web server document root to `public/`; do not expose the project root, `app/`, or `database/` as web content. The root `.htaccess` blocks direct HTTP access to `.env` when using Apache.
 5. Ensure PHP has `pdo_mysql` and `mbstring` enabled.
 6. Serve using your PHP web server, for example `php -S 127.0.0.1:8000 -t public` after configuring the environment.
 

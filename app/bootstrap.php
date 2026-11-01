@@ -3,6 +3,35 @@ declare(strict_types=1);
 
 ini_set('display_errors', '0');
 
+function load_local_environment(): void
+{
+    $environmentFile = dirname(__DIR__) . '/.env';
+    if (!is_file($environmentFile)) {
+        return;
+    }
+
+    $values = parse_ini_file($environmentFile, false, INI_SCANNER_RAW);
+    if ($values === false) {
+        throw new RuntimeException('Unable to read the local environment configuration.');
+    }
+
+    $allowedNames = [
+        'DB_HOST',
+        'DB_PORT',
+        'DB_NAME',
+        'DB_USER',
+        'DB_PASSWORD',
+        'SESSION_COOKIE_SECURE',
+    ];
+    foreach ($values as $name => $value) {
+        if (in_array($name, $allowedNames, true) && is_string($value) && getenv($name) === false) {
+            putenv($name . '=' . $value);
+        }
+    }
+}
+
+load_local_environment();
+
 set_exception_handler(static function (Throwable $exception): void {
     error_log((string) $exception);
     http_response_code(500);
@@ -58,9 +87,10 @@ function require_driver(): array
     return $driver;
 }
 
-function page_start(string $title): void
+function page_start(string $title, string $page = ''): void
 {
     $safeTitle = h($title);
+    $safePage = h($page);
     echo <<<HTML
 <!doctype html>
 <html lang="en">
@@ -68,24 +98,48 @@ function page_start(string $title): void
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{$safeTitle} | Driver Portal</title>
-  <style>
-    body { font: 16px/1.5 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; color: #17212b; }
-    form { display: grid; gap: .8rem; max-width: 28rem; }
-    label { display: grid; gap: .25rem; }
-    input { font: inherit; padding: .55rem; }
-    button { font: inherit; padding: .6rem 1rem; cursor: pointer; }
-    .message { padding: .8rem; background: #eef4fa; border-left: 4px solid #326b9a; }
-    .status { font-weight: 700; }
-    nav { display: flex; gap: 1rem; margin-bottom: 2rem; }
-  </style>
+  <meta name="theme-color" content="#f5f8ff">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body>
-<nav><a href="index.php">Home</a><a href="register.php">Register</a><a href="login.php">Log in</a></nav>
-<main>
+<body class="page-{$safePage}">
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.php" aria-label="Ala-Eh Driver Portal home">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span class="brand-name">Ala-Eh<span>Driver Portal</span></span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.php">Home</a>
+HTML;
+    if (current_driver() !== null) {
+        echo '<a href="dashboard.php">My application</a>';
+        echo '<form class="nav-logout" method="post" action="logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
+    } else {
+        echo '<a href="login.php">Log in</a>';
+        echo '<a class="button button-primary button-small" href="register.php">Get started <span aria-hidden="true">→</span></a>';
+    }
+    echo <<<HTML
+    </nav>
+  </div>
+</header>
+<main class="site-main" id="main-content">
 HTML;
 }
 
 function page_end(): void
 {
-    echo "</main></body></html>";
+    echo <<<HTML
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a class="footer-brand" href="index.php">Ala-Eh Driver Portal</a>
+    <span>Built for the road ahead.</span>
+  </div>
+</footer>
+</body>
+</html>
+HTML;
 }

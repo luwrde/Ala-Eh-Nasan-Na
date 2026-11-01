@@ -10,7 +10,7 @@ function db(): PDO
 
     $host = getenv('DB_HOST') ?: '127.0.0.1';
     $port = getenv('DB_PORT') ?: '3306';
-    $name = getenv('DB_NAME') ?: 'driver_portal';
+    $name = getenv('DB_NAME') ?: 'ala_eh';
     $user = getenv('DB_USER') ?: 'driver_app';
     $password = getenv('DB_PASSWORD');
 
