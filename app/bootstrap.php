@@ -77,6 +77,13 @@ function current_driver(): ?array
         : null;
 }
 
+function current_admin(): ?array
+{
+    return isset($_SESSION['admin']) && is_array($_SESSION['admin'])
+        ? $_SESSION['admin']
+        : null;
+}
+
 function require_driver(): array
 {
     $driver = current_driver();
@@ -85,6 +92,16 @@ function require_driver(): array
     }
 
     return $driver;
+}
+
+function require_admin(): array
+{
+    $admin = current_admin();
+    if ($admin === null) {
+        redirect('admin-login.php');
+    }
+
+    return $admin;
 }
 
 function page_start(string $title, string $page = ''): void
@@ -114,7 +131,10 @@ function page_start(string $title, string $page = ''): void
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.php">Home</a>
 HTML;
-    if (current_driver() !== null) {
+    if (current_admin() !== null) {
+        echo '<a href="admin-dashboard.php">Admin dashboard</a>';
+        echo '<form class="nav-logout" method="post" action="admin-logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
+    } elseif (current_driver() !== null) {
         echo '<a href="dashboard.php">My application</a>';
         echo '<form class="nav-logout" method="post" action="logout.php">' . csrf_field() . '<button class="button button-outline button-small" type="submit">Log out</button></form>';
     } else {
@@ -136,7 +156,7 @@ function page_end(): void
 <footer class="site-footer">
   <div class="footer-inner">
     <a class="footer-brand" href="index.php">Ala-Eh Driver Portal</a>
-    <span>Built for the road ahead.</span>
+    <span>Built for the road ahead. <a class="admin-footer-link" href="admin-login.php">Admin sign in</a></span>
   </div>
 </footer>
 </body>

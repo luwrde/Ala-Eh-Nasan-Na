@@ -22,6 +22,15 @@ CREATE TABLE IF NOT EXISTS drivers (
     UNIQUE KEY uq_drivers_license_number (license_number)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS admins (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    email VARCHAR(254) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_admins_email (email)
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS login_rate_limits (
     bucket_key CHAR(64) NOT NULL,
     attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
