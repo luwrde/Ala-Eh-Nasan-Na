@@ -1,6 +1,28 @@
 # Driver Portal
 
-A minimal PHP 8.1+ and MySQL driver registration/login application. It uses PDO prepared statements, `password_hash()`/`password_verify()`, CSRF tokens, hardened session cookies, and database-backed login throttling.
+A professional, modern driver registration and management application built with PHP 8.1+ and MySQL. Features enterprise-grade security with PDO prepared statements, password hashing, CSRF protection, hardened session cookies, and database-backed login throttling.
+
+## Design & Typography
+
+This application features a professional design system with:
+
+- **Modern Typography**: Inter and Plus Jakarta Sans fonts for exceptional readability
+- **Professional UI**: Refined components with smooth animations and hover states
+- **Design Tokens**: Consistent spacing, colors, and border radius throughout
+- **Responsive Design**: Mobile-first approach with fluid typography scaling
+- **Accessibility**: WCAG AA compliant with proper focus states and color contrast
+
+### Typography System
+- **Display Font**: Plus Jakarta Sans (headings, hero sections, important UI elements)
+- **Body Font**: Inter (body text, navigation, forms, general UI)
+- **Font Weights**: 400-800 for various text hierarchies
+- **Refined Letter Spacing**: Optimized for screen reading at all sizes
+
+### Color Palette
+- Modern blue palette (#0a1929 to #eff6ff)
+- High-contrast text colors for readability
+- Professional neutral tones (#0f172a to #f8fafc)
+- Semantic colors for status indicators
 
 ## Setup
 
