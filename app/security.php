@@ -17,13 +17,25 @@ function csrf_field(): string
 
 function verify_csrf_token(): void
 {
-    $submitted = $_POST['csrf_token'] ?? '';
-    $expected = $_SESSION['csrf_token'] ?? '';
+    verify_csrf_value($_POST['csrf_token'] ?? '');
+}
 
-    if (!is_string($submitted) || !is_string($expected) || $expected === '' || !hash_equals($expected, $submitted)) {
+function verify_csrf_value(mixed $submitted): void
+{
+    if (!csrf_value_is_valid($submitted)) {
         http_response_code(403);
         exit('Invalid request token. Reload the page and try again.');
     }
+}
+
+function csrf_value_is_valid(mixed $submitted): bool
+{
+    $expected = $_SESSION['csrf_token'] ?? '';
+
+    return is_string($submitted) &&
+        is_string($expected) &&
+        $expected !== '' &&
+        hash_equals($expected, $submitted);
 }
 
 function login_bucket_keys(string $email, string $ip): array

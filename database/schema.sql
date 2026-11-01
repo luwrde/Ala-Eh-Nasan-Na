@@ -22,6 +22,30 @@ CREATE TABLE IF NOT EXISTS drivers (
     UNIQUE KEY uq_drivers_license_number (license_number)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS jeepney_profiles (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    driver_id BIGINT UNSIGNED NOT NULL,
+    plate_number VARCHAR(16) NULL,
+    capacity INT UNSIGNED NULL,
+    route_assignment VARCHAR(120) NULL,
+    verification_status ENUM(
+        'not_submitted',
+        'pending_verification',
+        'verified',
+        'rejected'
+    ) NOT NULL DEFAULT 'not_submitted',
+    pending_plate_number VARCHAR(16) NULL,
+    pending_capacity INT UNSIGNED NULL,
+    pending_route_assignment VARCHAR(120) NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_jeepney_profiles_driver (driver_id),
+    UNIQUE KEY uq_jeepney_profiles_plate (plate_number),
+    CONSTRAINT fk_jeepney_profiles_driver
+        FOREIGN KEY (driver_id) REFERENCES drivers (id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS admins (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     email VARCHAR(254) NOT NULL,

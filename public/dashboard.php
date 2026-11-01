@@ -50,6 +50,11 @@ page_start('Application status', 'dashboard');
       <div><h2>Your account is ready</h2><p>Your driver account has been verified. Thank you for completing the process.</p></div>
     </div>
   <?php endif; ?>
+  <section class="driver-vehicle-link">
+    <div class="driver-vehicle-link-icon" aria-hidden="true">▰</div>
+    <div><h2>Your jeepney</h2><p>Add or update your plate number, passenger capacity, and route assignment.</p></div>
+    <a class="button button-outline" href="jeepney-profile.php">Manage vehicle <span aria-hidden="true">→</span></a>
+  </section>
   <div class="dashboard-footer-note"><span aria-hidden="true">◈</span> Your account information is private and protected.</div>
 </section>
 <?php page_end(); ?>

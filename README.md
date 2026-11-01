@@ -14,6 +14,8 @@ A minimal PHP 8.1+ and MySQL driver registration/login application. It uses PDO 
 
 Open `public/admin-login.php` to sign in, then review pending applications in the admin dashboard. Approval and rejection actions require an authenticated admin session and CSRF token. The optional CLI setup command asks for the password twice; input may be visible in the terminal.
 
+Drivers can manage one jeepney profile at `public/jeepney-profile.php`. The signed-in driver's session determines ownership; the API never accepts a driver ID to select whose vehicle is edited. `GET /api/vehicle.php` returns the signed-in driver's profile, and `PUT /api/vehicle.php` accepts JSON containing `plate_number`, `capacity`, and `route_assignment`, with the page's CSRF token in the `X-CSRF-Token` header. Philippine plate formats such as `ABC 1234` and `123 ABC` are accepted. Each submission is stored as pending changes; verified details remain unchanged until an administrator approves the update in the vehicle review queue.
+
 New driver records always start with `verification_status = 'pending_verification'`. Login lets a driver see that status, but the dashboard explicitly treats pending accounts as not yet approved. Any future driver-only operation must independently require `verified`; hiding a link is not authorization.
 
 ## Driver verification options
