@@ -1,6 +1,6 @@
-# Driver Portal
+# Ala-Eh Nasaan Na? Jeepney Locator
 
-A professional, modern driver registration and management application built with PHP 8.1+ and MySQL. Features enterprise-grade security with PDO prepared statements, password hashing, CSRF protection, hardened session cookies, and database-backed login throttling.
+A professional jeepney locator and driver management application built with PHP 8.1+ and MySQL. Features PDO prepared statements, password hashing, CSRF protection, hardened session cookies, and database-backed login throttling.
 
 ## Design & Typography
 

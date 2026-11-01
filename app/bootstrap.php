@@ -118,8 +118,10 @@ function page_start(string $title, string $page = ''): void
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{$safeTitle} | Driver Portal</title>
+  <title>{$safeTitle} | Ala-Eh Nasaan Na? Jeepney Locator</title>
   <meta name="theme-color" content="#f5f8ff">
+  <link rel="icon" type="image/png" href="assets/ala-eh-logo.png">
+  <link rel="apple-touch-icon" href="assets/ala-eh-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -134,9 +136,9 @@ HTML;
 <div class="app-layout">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <a class="sidebar-brand" href="index.php" aria-label="Ala-Eh Driver Portal home">
-        <span class="sidebar-brand-mark" aria-hidden="true">A</span>
-        <span class="sidebar-brand-name">Ala-Eh<span>Driver Portal</span></span>
+      <a class="sidebar-brand" href="index.php" aria-label="Ala-Eh Nasaan Na? Jeepney Locator home">
+        <img class="sidebar-brand-mark" src="assets/ala-eh-logo.png" alt="" aria-hidden="true">
+        <span class="sidebar-brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span>
       </a>
       <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
         <span class="toggle-icon"></span>
@@ -243,9 +245,9 @@ HTML;
         echo <<<HTML
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href="index.php" aria-label="Ala-Eh Driver Portal home">
-      <span class="brand-mark" aria-hidden="true">A</span>
-      <span class="brand-name">Ala-Eh<span>Driver Portal</span></span>
+    <a class="brand" href="index.php" aria-label="Ala-Eh Nasaan Na? Jeepney Locator home">
+      <img class="brand-mark" src="assets/ala-eh-logo.png" alt="" aria-hidden="true">
+      <span class="brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.php">Home</a>
@@ -317,7 +319,10 @@ HTML;
 </main>
 <footer class="site-footer">
   <div class="footer-inner">
-    <a class="footer-brand" href="index.php">Ala-Eh Driver Portal</a>
+    <a class="footer-brand" href="index.php" aria-label="Ala-Eh Nasaan Na? Jeepney Locator home">
+      <img class="footer-brand-mark" src="assets/ala-eh-logo.png" alt="" aria-hidden="true">
+      <span>Ala-Eh Nasaan Na?<small>Jeepney Locator</small></span>
+    </a>
     <span>Built for the road ahead. <a class="admin-footer-link" href="admin-login.php">Admin sign in</a></span>
   </div>
 </footer>
