@@ -1,7 +1,20 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../app/seats.php';
 $driver = require_driver();
+
+$driverSeats = driver_seats((int) $driver['id']);
+$routeSeatColor = 'unknown';
+if (
+    can_update_seats($driverSeats) &&
+    $driverSeats['updated_at'] !== null &&
+    (int) $driverSeats['reported_capacity'] === (int) $driverSeats['capacity']
+) {
+    $capacity = (int) $driverSeats['capacity'];
+    $occupied = min($capacity, max(0, (int) ($driverSeats['occupied'] ?? 0)));
+    $routeSeatColor = seat_status($occupied, $capacity)['color'];
+}
 
 $route = null;
 $stops = [];
@@ -71,32 +84,34 @@ page_start('My route', 'driver-route');
 <section class="route-page">
   <div class="route-page-heading">
     <span class="eyebrow"><span class="eyebrow-dot"></span> ROUTE MANAGEMENT</span>
-    <h1>My assigned route</h1>
-    <p>View your approved route, terminals, destination, and all boarding points in travel order.</p>
+    <h1>My route</h1>
+    <p>Set your location, explore the roads ahead, and review your assigned route.</p>
   </div>
+
+  <?php if ($driverStatus === 'verified') { require __DIR__ . '/../app/route-map.php'; } ?>
 
   <?php if ($driverStatus !== 'verified'): ?>
     <section class="route-empty-state">
       <div class="empty-state-icon">
-        <span aria-hidden="true">◷</span>
+        <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#clock"></use></svg></span>
       </div>
       <h2>Route details unavailable</h2>
       <p>Your driver account must be verified before an assigned route can be displayed. Once verified, your route information will appear here.</p>
       <a class="button button-outline" href="dashboard.php">
         <span>View application status</span>
-        <span aria-hidden="true">→</span>
+        <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span>
       </a>
     </section>
   <?php elseif ($route === null): ?>
     <section class="route-empty-state">
       <div class="empty-state-icon warning">
-        <span aria-hidden="true">↗</span>
+        <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow-up"></use></svg></span>
       </div>
       <h2>No configured route found</h2>
       <?php if (is_string($routeAssignment) && $routeAssignment !== ''): ?>
         <p>Your approved vehicle route is <strong><?= h($routeAssignment) ?></strong>, but it doesn't match an active route record yet.</p>
         <div class="empty-state-note">
-          <span aria-hidden="true">ℹ</span>
+          <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#info"></use></svg></span>
           <span>Please contact the service administrator to configure this route in the system.</span>
         </div>
       <?php else: ?>
@@ -104,13 +119,13 @@ page_start('My route', 'driver-route');
       <?php endif; ?>
       <a class="button button-primary" href="jeepney-profile.php">
         <span>Manage vehicle profile</span>
-        <span aria-hidden="true">→</span>
+        <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span>
       </a>
     </section>
   <?php elseif ($stops === []): ?>
     <section class="route-empty-state">
       <div class="empty-state-icon info">
-        <span aria-hidden="true">◎</span>
+        <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#user"></use></svg></span>
       </div>
       <h2><?= h($route['name']) ?></h2>
       <p>This route is active in the system, but its ordered stops haven't been configured yet. Check back later for updates.</p>
@@ -119,7 +134,7 @@ page_start('My route', 'driver-route');
     <!-- Route Header Card -->
     <section class="route-header-card">
       <div class="route-header-icon">
-        <span aria-hidden="true">🗺️</span>
+        <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#map"></use></svg></span>
       </div>
       <div class="route-header-content">
         <div class="route-header-top">
@@ -144,7 +159,7 @@ page_start('My route', 'driver-route');
         <article class="route-info-card">
           <div class="info-card-header">
             <div class="info-card-icon terminal">
-              <span aria-hidden="true">🏁</span>
+              <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#flag"></use></svg></span>
             </div>
             <span class="info-card-label">Terminal Location<?= count($terminals) > 1 ? 's' : '' ?></span>
           </div>
@@ -155,7 +170,7 @@ page_start('My route', 'driver-route');
               <div class="info-card-item <?= $index > 0 ? 'has-divider' : '' ?>">
                 <strong><?= h((string) $terminal['location_name']) ?></strong>
                 <span class="info-card-meta">
-                  <span class="meta-icon" aria-hidden="true">📍</span>
+                  <span class="meta-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#pin"></use></svg></span>
                   <?= h((string) $terminal['area_label']) ?>
                 </span>
                 <span class="info-card-detail"><?= h((string) $terminal['landmark']) ?></span>
@@ -168,7 +183,7 @@ page_start('My route', 'driver-route');
         <article class="route-info-card">
           <div class="info-card-header">
             <div class="info-card-icon destination">
-              <span aria-hidden="true">🎯</span>
+              <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#target"></use></svg></span>
             </div>
             <span class="info-card-label">Final Destination</span>
           </div>
@@ -179,7 +194,7 @@ page_start('My route', 'driver-route');
               <div class="info-card-item">
                 <strong><?= h((string) $destination['location_name']) ?></strong>
                 <span class="info-card-meta">
-                  <span class="meta-icon" aria-hidden="true">📍</span>
+                  <span class="meta-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#pin"></use></svg></span>
                   <?= h((string) $destination['area_label']) ?>
                 </span>
                 <span class="info-card-detail"><?= h((string) $destination['landmark']) ?></span>
@@ -192,7 +207,7 @@ page_start('My route', 'driver-route');
         <article class="route-info-card stats">
           <div class="info-card-header">
             <div class="info-card-icon stats">
-              <span aria-hidden="true">📊</span>
+              <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#chart"></use></svg></span>
             </div>
             <span class="info-card-label">Route Statistics</span>
           </div>
@@ -241,16 +256,16 @@ page_start('My route', 'driver-route');
                 <span class="timeline-type"><?= h(str_replace('_', ' ', (string) $stop['stop_type'])) ?></span>
               </div>
               <div class="timeline-location">
-                <span class="location-icon" aria-hidden="true">📍</span>
+                <span class="location-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#pin"></use></svg></span>
                 <span><?= h((string) $stop['area_label']) ?></span>
               </div>
               <div class="timeline-landmark">
-                <span class="landmark-icon" aria-hidden="true">🏢</span>
+                <span class="landmark-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#building"></use></svg></span>
                 <span><?= h((string) $stop['landmark']) ?></span>
               </div>
               <?php if (is_string($stop['implementation_note']) && $stop['implementation_note'] !== ''): ?>
                 <div class="timeline-note">
-                  <span class="note-icon" aria-hidden="true">ℹ</span>
+                  <span class="note-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#info"></use></svg></span>
                   <span><?= h((string) $stop['implementation_note']) ?></span>
                 </div>
               <?php endif; ?>
@@ -261,9 +276,12 @@ page_start('My route', 'driver-route');
     </section>
 
     <div class="route-footer-note">
-      <span class="note-icon" aria-hidden="true">ℹ</span>
+      <span class="note-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#info"></use></svg></span>
       <span>Route information is based on your approved vehicle assignment and configured route stops in the system.</span>
     </div>
   <?php endif; ?>
 </section>
+<?php if ($driverStatus === 'verified'): ?>
+<?php require __DIR__ . '/../app/route-map-scripts.php'; ?>
+<?php endif; ?>
 <?php page_end(); ?>

@@ -85,12 +85,57 @@ function current_admin(): ?array
         : null;
 }
 
+function driver_language(): string
+{
+    $language = $_COOKIE['driver_language'] ?? $_SESSION['driver_language'] ?? 'en';
+    return is_string($language) && in_array($language, ['en', 'fil'], true) ? $language : 'en';
+}
+
+function driver_theme(): string
+{
+    $theme = $_COOKIE['driver_theme'] ?? $_SESSION['driver_theme'] ?? 'light';
+    return is_string($theme) && in_array($theme, ['light', 'dark'], true) ? $theme : 'light';
+}
+
+function driver_photo_file(int $driverId): ?string
+{
+    if ($driverId < 1) {
+        return null;
+    }
+
+    $directory = dirname(__DIR__) . '/storage/driver-photos';
+    $files = glob($directory . DIRECTORY_SEPARATOR . $driverId . '-*');
+    if ($files === false) {
+        return null;
+    }
+
+    $photos = array_values(array_filter(
+        $files,
+        static fn (string $file): bool => is_file($file)
+            && preg_match('/\A' . $driverId . '-[a-f0-9]{32}\.(?:jpg|png|webp)\z/', basename($file)) === 1
+    ));
+    usort($photos, static fn (string $left, string $right): int => filemtime($right) <=> filemtime($left));
+
+    return $photos[0] ?? null;
+}
+
 function require_driver(): array
 {
     $driver = current_driver();
     if ($driver === null) {
         redirect('login.php');
     }
+
+    $access = db()->prepare('SELECT d.full_name, d.email, d.verification_status,
+        COALESCE(s.account_status, \'active\') AS account_status
+        FROM drivers d LEFT JOIN driver_admin_status s ON s.driver_id = d.id WHERE d.id = ?');
+    $access->execute([(int) $driver['id']]);
+    $record = $access->fetch();
+    if (!$record || $record['account_status'] !== 'active') {
+        unset($_SESSION['driver']);
+        redirect((str_contains((string) ($_SERVER['SCRIPT_NAME'] ?? ''), '/api/') ? '../' : '') . 'login.php?account=disabled');
+    }
+    $_SESSION['driver'] = $driver = array_merge($driver, array_intersect_key($record, array_flip(['full_name', 'email', 'verification_status'])));
 
     return $driver;
 }
@@ -99,22 +144,95 @@ function require_admin(): array
 {
     $admin = current_admin();
     if ($admin === null) {
-        redirect('admin-login.php');
+        if (function_exists('remember_auth_return_path')) remember_auth_return_path('admin_return_to');
+        redirect((str_contains((string) ($_SERVER['SCRIPT_NAME'] ?? ''), '/api/') ? '../' : '') . 'admin-login.php');
     }
 
-    return $admin;
+    $access = db()->prepare(
+        'SELECT role, account_status FROM admin_roles WHERE admin_id = :admin_id LIMIT 1'
+    );
+    $access->execute(['admin_id' => $admin['id']]);
+    $role = $access->fetch();
+    if ($role === false || $role['account_status'] !== 'active') {
+        unset($_SESSION['admin']);
+        redirect((str_contains((string) ($_SERVER['SCRIPT_NAME'] ?? ''), '/api/') ? '../' : '') . 'admin-login.php?account=disabled');
+    }
+    $_SESSION['admin']['role'] = $role['role'];
+
+    return $_SESSION['admin'];
 }
 
 function page_start(string $title, string $page = ''): void
 {
+    if (defined('ADMIN_PORTAL')) { admin_page_start($title, $page); return; }
     $safeTitle = h($title);
     $safePage = h($page);
+    $language = current_driver() !== null ? driver_language() : 'en';
+    $theme = current_driver() !== null ? driver_theme() : 'light';
+    $stylesVersion = (string) filemtime(__DIR__ . '/../public/assets/styles.css');
     $isAuthenticated = current_driver() !== null || current_admin() !== null;
     $layoutClass = $isAuthenticated ? 'has-sidebar' : '';
+    $headerProfile = '';
+    $mapStyles = in_array($page, ['driver-route', 'commuter-map', 'admin-locations'], true)
+        ? '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">'
+        : '';
+    if (current_admin() === null && current_driver() !== null) {
+        $profileName = h((string) current_driver()['full_name']);
+        $profileRole = current_driver()['verification_status'] === 'verified' ? 'Verified driver' : 'Driver';
+        $profileInitial = h(mb_strtoupper(mb_substr((string) current_driver()['full_name'], 0, 1)));
+        $profilePhoto = driver_photo_file((int) current_driver()['id']);
+        $profileAvatar = $profilePhoto === null
+            ? $profileInitial
+            : '<img src="driver-photo.php?v=' . rawurlencode((string) filemtime($profilePhoto)) . '" alt="" loading="lazy">';
+        $logoutToken = csrf_field();
+        $headerProfile = <<<HTML
+      <div class="header-account">
+        <button class="header-user" id="account-menu-toggle" type="button" aria-label="Open account menu" aria-expanded="false" aria-controls="account-menu">
+          <span class="sidebar-user-avatar" aria-hidden="true">{$profileAvatar}</span>
+          <span class="sidebar-user-info">
+            <span class="sidebar-user-name">{$profileName}</span>
+            <span class="sidebar-user-role">{$profileRole}</span>
+          </span>
+          <svg class="ui-icon account-menu-chevron" aria-hidden="true"><use href="assets/icons.svg#chevron-down"></use></svg>
+        </button>
+        <div class="account-menu" id="account-menu" hidden>
+          <a href="driver-profile.php"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#user"></use></svg><span>Profile</span></a>
+          <a href="driver-settings.php"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#settings"></use></svg><span>Settings</span></a>
+          <form method="post" action="logout.php">
+            {$logoutToken}
+            <button type="submit"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#logout"></use></svg><span>Logout</span></button>
+          </form>
+        </div>
+      </div>
+HTML;
+    } elseif (current_admin() !== null) {
+        $adminAccountName = h((string) (current_admin()['full_name'] ?? current_admin()['email'] ?? 'Administrator'));
+        $adminInitial = h(mb_strtoupper(mb_substr($adminAccountName, 0, 1)));
+        $logoutToken = csrf_field();
+        $headerProfile = <<<HTML
+      <div class="header-account">
+        <button class="header-user" id="account-menu-toggle" type="button" aria-label="Open account menu" aria-expanded="false" aria-controls="account-menu">
+          <span class="sidebar-user-avatar" aria-hidden="true">{$adminInitial}</span>
+          <span class="sidebar-user-info">
+            <span class="sidebar-user-name">{$adminAccountName}</span>
+            <span class="sidebar-user-role">Administrator</span>
+          </span>
+          <svg class="ui-icon account-menu-chevron" aria-hidden="true"><use href="assets/icons.svg#chevron-down"></use></svg>
+        </button>
+        <div class="account-menu" id="account-menu" hidden>
+          <a href="admin-dashboard.php"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#user"></use></svg><span>Account</span></a>
+          <form method="post" action="admin-logout.php">
+            {$logoutToken}
+            <button type="submit"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#logout"></use></svg><span>Logout</span></button>
+          </form>
+        </div>
+      </div>
+HTML;
+    }
     
     echo <<<HTML
 <!doctype html>
-<html lang="en">
+<html lang="{$language}" data-theme="{$theme}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -125,7 +243,8 @@ function page_start(string $title, string $page = ''): void
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css">
+{$mapStyles}
+  <link rel="stylesheet" href="assets/styles.css?v={$stylesVersion}">
 </head>
 <body class="page-{$safePage} {$layoutClass}">
 HTML;
@@ -143,85 +262,52 @@ HTML;
       <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
         <span class="toggle-icon"></span>
       </button>
+      <button class="mobile-menu-close" id="mobile-menu-close" type="button" aria-label="Close menu">&times;</button>
     </div>
     <nav class="sidebar-nav" aria-label="Main navigation">
 HTML;
         
         if (current_admin() !== null) {
-            $driver = current_admin();
+            $adminName = h((string) (current_admin()['full_name'] ?? current_admin()['email'] ?? 'Administrator'));
             echo <<<HTML
       <div class="sidebar-user">
         <div class="sidebar-user-avatar">A</div>
         <div class="sidebar-user-info">
-          <span class="sidebar-user-name">{$driver['full_name']}</span>
+          <span class="sidebar-user-name">{$adminName}</span>
           <span class="sidebar-user-role">Administrator</span>
         </div>
       </div>
       <div class="sidebar-menu">
         <a href="index.php" class="sidebar-link">
-          <span class="sidebar-link-icon">🏠</span>
+          <span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#home"></use></svg></span>
           <span class="sidebar-link-text">Home</span>
         </a>
-        <a href="admin-dashboard.php" class="sidebar-link">
-          <span class="sidebar-link-icon">📊</span>
-          <span class="sidebar-link-text">Admin Dashboard</span>
+        <a href="admin-dashboard.php" class="sidebar-link" aria-label="Admin Dashboard">
+          <span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#chart"></use></svg></span>
+          <span class="sidebar-link-text" data-mobile-label="Dashboard">Admin Dashboard</span>
         </a>
-      </div>
-      <div class="sidebar-footer">
-        <form method="post" action="admin-logout.php">
-HTML;
-        echo csrf_field();
-        echo <<<HTML
-          <button class="sidebar-logout" type="submit">
-            <span class="sidebar-link-icon">🚪</span>
-            <span class="sidebar-link-text">Log out</span>
-          </button>
-        </form>
+        <a href="admin-locations.php" class="sidebar-link" aria-label="Map locations"><span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#pin"></use></svg></span><span class="sidebar-link-text" data-mobile-label="Locations">Map locations</span></a>
+        <a href="map.php" class="sidebar-link" aria-label="Public map"><span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#map"></use></svg></span><span class="sidebar-link-text" data-mobile-label="Map">Public map</span></a>
       </div>
 HTML;
         } elseif (current_driver() !== null) {
             $driver = current_driver();
-            $initials = strtoupper(substr($driver['full_name'], 0, 1));
             echo <<<HTML
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">{$initials}</div>
-        <div class="sidebar-user-info">
-          <span class="sidebar-user-name">{$driver['full_name']}</span>
-          <span class="sidebar-user-role">Driver</span>
-        </div>
-      </div>
       <div class="sidebar-menu">
-        <a href="index.php" class="sidebar-link">
-          <span class="sidebar-link-icon">🏠</span>
+        <a href="dashboard.php" class="sidebar-link">
+          <span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#home"></use></svg></span>
           <span class="sidebar-link-text">Home</span>
         </a>
-        <a href="dashboard.php" class="sidebar-link">
-          <span class="sidebar-link-icon">📋</span>
-          <span class="sidebar-link-text">My application</span>
+        <a href="map.php" class="sidebar-link" aria-label="Jeepney map">
+          <span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#map"></use></svg></span>
+          <span class="sidebar-link-text" data-mobile-label="Map">Jeepney map</span>
         </a>
-        <a href="driver-route.php" class="sidebar-link">
-          <span class="sidebar-link-icon">🗺️</span>
-          <span class="sidebar-link-text">My route</span>
+        <a href="jeepney-profile.php" class="sidebar-link" aria-label="My jeepney">
+          <span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#bus"></use></svg></span>
+          <span class="sidebar-link-text" data-mobile-label="Jeepney">My jeepney</span>
         </a>
-        <a href="jeepney-profile.php" class="sidebar-link">
-          <span class="sidebar-link-icon">🚌</span>
-          <span class="sidebar-link-text">My jeepney</span>
-        </a>
-        <a href="driver-profile.php" class="sidebar-link">
-          <span class="sidebar-link-icon">👤</span>
-          <span class="sidebar-link-text">My profile</span>
-        </a>
-      </div>
-      <div class="sidebar-footer">
-        <form method="post" action="logout.php">
-HTML;
-        echo csrf_field();
-        echo <<<HTML
-          <button class="sidebar-logout" type="submit">
-            <span class="sidebar-link-icon">🚪</span>
-            <span class="sidebar-link-text">Log out</span>
-          </button>
-        </form>
+        <a href="driver-trip.php" class="sidebar-link" aria-label="Trip tracking"><span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#map"></use></svg></span><span class="sidebar-link-text">Trip tracking</span></a>
+        <a href="driver-documents.php" class="sidebar-link" aria-label="My documents"><span class="sidebar-link-icon"><svg class="ui-icon" aria-hidden="true"><use href="assets/icons.svg#user"></use></svg></span><span class="sidebar-link-text">My documents</span></a>
       </div>
 HTML;
         }
@@ -231,12 +317,13 @@ HTML;
   </aside>
   <div class="app-content">
     <header class="top-header">
-      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Open menu">
+      <button class="mobile-menu-toggle" id="mobile-toggle" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
       </button>
       <h1 class="page-title">{$safeTitle}</h1>
+{$headerProfile}
     </header>
     <main class="site-main" id="main-content">
 HTML;
@@ -252,7 +339,7 @@ HTML;
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.php">Home</a>
       <a href="login.php">Log in</a>
-      <a class="button button-primary button-small" href="register.php">Get started <span aria-hidden="true">→</span></a>
+      <a class="button button-primary button-small" href="register.php">Get started <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span></a>
     </nav>
   </div>
 </header>
@@ -263,54 +350,22 @@ HTML;
 
 function page_end(): void
 {
+    if (defined('ADMIN_PORTAL')) { admin_page_end(); return; }
     $isAuthenticated = current_driver() !== null || current_admin() !== null;
     
     if ($isAuthenticated) {
+        $navigationVersion = (string) filemtime(__DIR__ . '/../public/assets/navigation.js');
+        $driverLanguageScript = '';
+        if (current_driver() !== null) {
+            $languageVersion = (string) filemtime(__DIR__ . '/../public/assets/driver-language.js');
+            $driverLanguageScript = '<script src="assets/driver-language.js?v=' . h($languageVersion) . '" defer></script>';
+        }
         echo <<<HTML
     </main>
   </div>
 </div>
-<script>
-// Sidebar toggle functionality
-const sidebar = document.getElementById('sidebar');
-const sidebarToggle = document.getElementById('sidebar-toggle');
-const mobileToggle = document.getElementById('mobile-toggle');
-
-if (sidebarToggle) {
-  sidebarToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-  });
-}
-
-if (mobileToggle) {
-  mobileToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('mobile-open');
-  });
-}
-
-// Restore sidebar state
-if (localStorage.getItem('sidebarCollapsed') === 'true') {
-  sidebar.classList.add('collapsed');
-}
-
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-  if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
-    if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
-      sidebar.classList.remove('mobile-open');
-    }
-  }
-});
-
-// Active link highlighting
-const currentPath = window.location.pathname.split('/').pop();
-document.querySelectorAll('.sidebar-link').forEach(link => {
-  if (link.getAttribute('href') === currentPath) {
-    link.classList.add('active');
-  }
-});
-</script>
+<script src="assets/navigation.js?v={$navigationVersion}" defer></script>
+{$driverLanguageScript}
 </body>
 </html>
 HTML;

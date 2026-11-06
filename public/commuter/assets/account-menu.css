@@ -1,0 +1,25 @@
+/* The same account menu on the commuter map and standard page headers. */
+.commuter-account { position: relative; margin-left: auto; flex-shrink: 0; pointer-events: auto; }
+.top-header > .passenger-profile[hidden] { display: none; }
+.commuter-account-toggle { display: flex; align-items: center; gap: 10px; min-height: 52px; max-width: 300px; padding: 5px 10px; border: 1px solid transparent; border-radius: 14px; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.passenger-dashboard-page .commuter-account .passenger-profile-avatar { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 50%; background: var(--blue-50); color: var(--blue-700); font-size: 15px; font-weight: 700; overflow: hidden; }
+.commuter-account-info { display: grid; gap: 3px; min-width: 0; }
+.passenger-dashboard-page .commuter-account .passenger-profile-name { display: block; max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 1.4; color: var(--ink); }
+.commuter-account-info > span { color: var(--muted); font-size: 12px; line-height: 1.4; }
+.commuter-account-toggle > svg { width: 16px; height: 16px; margin-left: 8px; flex-shrink: 0; color: var(--muted); }
+.commuter-account-toggle[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.commuter-account-panel { position: absolute; z-index: 1; top: calc(100% + 8px); right: 0; width: min(260px, calc(100vw - 24px)); padding: 10px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface, var(--white)); box-shadow: 0 14px 40px rgb(15 23 42 / 16%); }
+.commuter-account-panel[hidden] { display: none; }
+.commuter-account-panel > :is(button, a) { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 52px; padding: 12px; border: 0; border-radius: 10px; background: transparent; color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; line-height: 1.4; text-decoration: none; text-align: left; cursor: pointer; }
+.commuter-account-panel svg { width: 22px; height: 22px; flex-shrink: 0; }
+.commuter-account-panel > :is(button, a):hover, .commuter-account-panel > a[aria-current="page"], .commuter-account-toggle:hover { background: var(--blue-50); }
+.commuter-account :is(button, a):focus-visible { outline: 2px solid var(--blue-400); outline-offset: 2px; }
+.map-experience .commuter-account { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; }
+.map-experience .commuter-account-toggle { border-color: var(--line); background: var(--surface, var(--white)); box-shadow: 0 4px 16px rgb(15 23 42 / 12%); }
+[data-theme="dark"] .commuter-account-panel { box-shadow: 0 14px 40px rgb(0 0 0 / 35%); }
+@media (max-width: 640px) {
+  .commuter-account-info { display: none; }
+  .commuter-account-toggle { min-height: 44px; padding: 4px 6px; gap: 4px; }
+  .passenger-dashboard-page .commuter-account .passenger-profile-avatar { flex-basis: 34px; width: 34px; height: 34px; font-size: 12px; }
+  .commuter-account-toggle > svg { margin-left: 0; width: 14px; }
+}

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 200" fill="none">
+  <!-- A decorative, fictional town street; no real terminal or business is depicted. -->
+  <g fill="#e9eff7">
+    <path d="M0 123h30v61H0zm135-68h65v129h-65zm187 28h50v101h-50zm276-39h70v140h-70zm210 58h76v82h-76zm265-58h64v140h-64zm214 48h72v92h-72z"/>
+    <path d="M148 46h39v10h-39zm464-13h43v12h-43zm478 0h29v12h-29z"/>
+  </g>
+  <g stroke="#adc1d3" stroke-width="2" stroke-linejoin="round">
+    <!-- Low houses and neighborhood shopfronts. -->
+    <path d="M33 115h126v72H33z" fill="#e4ecf5"/>
+    <path d="m24 116 70-50 75 50H24Z" fill="#bacbdc"/>
+    <path d="M50 131h27v28H50zm67 0h25v28h-25z" fill="#b4d2e5"/>
+    <path d="M87 133h20v54H87z" fill="#c5d4df"/>
+    <path d="M63 132v26m67-26v26" stroke="#eef5fb"/>
+    <path d="M218 53h86v134h-86z" fill="#dce7f2"/>
+    <path d="M212 48h98v9h-98z" fill="#aabfd4"/>
+    <g fill="#b4cfe3"><path d="M232 70h18v22h-18zm36 0h20v22h-20zm-36 36h18v22h-18zm36 0h20v22h-20zm-36 36h18v23h-18zm36 0h20v23h-20z"/></g>
+    <path d="M347 113h126v74H347z" fill="#eee8dd"/>
+    <path d="M340 108h140v14H340z" fill="#b7cadd"/>
+    <path d="M355 136h41v38h-41zm54 0h22v51h-22zm32 0h23v38h-23z" fill="#bfd7e6"/>
+    <path d="M341 122h138l-7 14H348l-7-14Z" fill="#b8cfdf"/>
+    <path d="M365 122h15l-2 14h-15zm34 0h15v14h-15zm34 0h15l3 14h-15z" fill="#f2f6fa" stroke="none"/>
+    <path d="M602 103h118v84H602z" fill="#e4eaf1"/>
+    <path d="m591 105 69-43 70 43H591Z" fill="#c6bfc4"/>
+    <path d="M616 122h27v29h-27zm59 0h29v29h-29z" fill="#bad4e6"/>
+    <path d="M650 130h18v57h-18z" fill="#c5d3de"/>
+    <path d="M898 75h105v112H898z" fill="#dce6f0"/>
+    <path d="M890 69h121v10H890z" fill="#b8cadd"/>
+    <path d="M912 92h23v25h-23zm43 0h31v25h-31zm-43 40h23v24h-23zm43 0h31v24h-31z" fill="#b0cde1"/>
+    <path d="M943 164h25v23h-25z" fill="#bdcedd"/>
+    <path d="M1160 117h150v70h-150z" fill="#eee8df"/>
+    <path d="M1152 110h166v13h-166z" fill="#a9c0d8"/>
+    <path d="M1170 136h43v36h-43zm54 0h27v51h-27zm38 0h36v36h-36z" fill="#b6d1e3"/>
+  </g>
+  <!-- Broadleaf trees and palms, spaced between the buildings. -->
+  <g stroke="#a5b9b3" stroke-width="2" stroke-linecap="round">
+    <path d="M186 187v-66m0 20-12-13m12 23 12-16M535 187v-79m0 35-15-14m15 27 15-17M771 187v-68m0 24-13-13m13 24 12-15M1055 187v-70m0 26-13-13m13 23 13-17M1351 187v-71m0 28-13-14m13 25 15-17"/>
+  </g>
+  <g fill="#c4d9cf" stroke="#b1c9bd" stroke-width="2">
+    <path d="M162 124c-13-17-3-36 10-37-1-26 35-30 40-5 23 1 26 36 3 43-20 8-36 7-53-1Z"/>
+    <path d="M510 116c-15-20-4-40 11-42-1-30 38-33 44-7 24 0 32 38 6 48-20 10-42 12-61 1Z"/>
+    <path d="M749 125c-14-18-5-38 10-39-1-27 33-33 42-7 25 0 27 35 6 43-19 12-39 10-58 3Z"/>
+    <path d="M1033 125c-12-17-5-35 10-37-1-26 33-31 40-7 23 0 27 35 5 43-19 9-38 9-55 1Z"/>
+    <path d="M1325 123c-15-20-4-40 12-41-1-28 36-35 43-7 25 0 30 37 6 47-22 10-42 11-61 1Z"/>
+  </g>
+  <g stroke="#a6bcae" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m837 187 7-114m0 0c-22-16-42-7-47 4 19-6 32-3 47-4Zm0 0c-8-29 7-42 21-43-12 15-17 26-21 43Zm0 0c24-20 44-9 48 3-19-6-33-5-48-3Zm0 0c-27 1-35 18-34 28 13-18 22-24 34-28Zm0 0c14 7 21 22 20 32-7-16-13-24-20-32Z" fill="#c4d9ce"/>
+  </g>
+  <!-- Lamps, a bench and small roadside planters. -->
+  <g stroke="#a9bccf" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 186V89c0-13 19-13 19 0h-17M577 186V92c0-13 19-13 19 0h-17M1124 186V90c0-13 19-13 19 0h-17"/>
+    <path d="M504 169h60m-56-9h52m-52-7h52m-51 16v16m48-16v16"/>
+  </g>
+  <g fill="#c0d3cc"><path d="M315 177c-9-12-1-19 7-15 4-14 19-11 20 1 12-4 20 5 13 14h-40Zm704 0c-8-11-1-18 7-14 5-13 17-10 20 0 13-3 18 6 12 14h-39Z"/></g>
+  <path d="M311 175h46l-4 12h-38zm704 0h47l-4 12h-39z" fill="#c3cdd7"/>
+  <path d="M0 187h1440v13H0z" fill="#dce5ef"/>
+  <path d="M0 187h1440m-1440 10h1440" stroke="#c5d3e1" stroke-width="2"/>
+  <path d="M89 188v9m153-9v9m153-9v9m153-9v9m153-9v9m153-9v9m153-9v9m153-9v9m153-9v9" stroke="#cbd8e5"/>
+</svg>

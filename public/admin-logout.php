@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../app/admin-bootstrap.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -19,4 +19,4 @@ setcookie(session_name(), '', [
     'samesite' => $params['samesite'],
 ]);
 session_destroy();
-redirect('index.php');
+redirect('commuter/user-login.html');

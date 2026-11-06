@@ -66,7 +66,7 @@ page_start('Driver registration', 'register');
       <h2>Create your account</h2>
       <p>Complete each field to get started.</p>
     </div>
-    <div class="status-note"><span class="status-note-icon" aria-hidden="true">i</span><span>Your application will be marked <strong>pending verification</strong> after registration.</span></div>
+    <div class="status-note"><span class="status-note-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#info"></use></svg></span><span>Your application will be marked <strong>pending verification</strong> after registration.</span></div>
     <?php if ($error !== ''): ?><p class="message message-error" role="alert"><?= h($error) ?></p><?php endif; ?>
     <form class="form-stack registration-form" method="post" action="register.php" autocomplete="on">
       <?= csrf_field() ?>
@@ -76,10 +76,10 @@ page_start('Driver registration', 'register');
       <label class="field-full">Driver license number <input name="license_number" required maxlength="64" autocomplete="off" placeholder="Enter your license number" value="<?= h((string) ($_POST['license_number'] ?? '')) ?>"></label>
       <label>Password <input type="password" name="password" required minlength="12" autocomplete="new-password" placeholder="At least 12 characters"><span class="field-hint">Use at least 12 characters.</span></label>
       <label>Confirm password <input type="password" name="password_confirm" required minlength="12" autocomplete="new-password" placeholder="Re-enter your password"></label>
-      <button class="button button-primary button-submit field-full" type="submit">Create account <span aria-hidden="true">→</span></button>
+      <button class="button button-primary button-submit field-full" type="submit">Create account <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span></button>
     </form>
     <p class="form-switch">Already have an account? <a href="login.php">Sign in</a></p>
-    <div class="form-security"><span aria-hidden="true">◈</span> Your information is protected and kept private.</div>
+    <div class="form-security"><span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#shield"></use></svg></span> Your information is protected and kept private.</div>
   </div>
 </section>
 <?php page_end(); ?>

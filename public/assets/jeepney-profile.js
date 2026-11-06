@@ -10,6 +10,7 @@
   const statusBanner = document.querySelector('#vehicle-status-banner');
   const statusTitle = document.querySelector('#vehicle-status-title');
   const statusMessage = document.querySelector('#vehicle-status-message');
+  const pendingAnimation = document.querySelector('#vehicle-pending-animation');
   const approvedDetails = document.querySelector('#approved-vehicle-details');
   const formMessage = document.querySelector('#vehicle-form-message');
   const submitButton = document.querySelector('#vehicle-submit');
@@ -24,6 +25,9 @@
         !(statusMessage instanceof HTMLElement)) return;
 
     statusBanner.classList.remove('vehicle-status-pending', 'vehicle-status-verified', 'vehicle-status-rejected');
+    if (pendingAnimation instanceof HTMLElement) {
+      pendingAnimation.hidden = status !== 'pending_verification';
+    }
     if (status === 'pending_verification') {
       statusBanner.classList.add('vehicle-status-pending');
       statusTitle.textContent = 'Changes pending verification';
@@ -154,7 +158,7 @@
       showError(error instanceof Error ? error.message : 'Unable to submit your vehicle details.');
     } finally {
       submitButton.disabled = false;
-      submitButton.innerHTML = 'Submit for review <span aria-hidden="true">→</span>';
+      submitButton.innerHTML = 'Submit for review <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span>';
     }
   });
 

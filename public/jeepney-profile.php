@@ -12,18 +12,27 @@ page_start('My jeepney', 'jeepney-profile');
       <h1>Jeepney profile</h1>
       <p>Manage your vehicle details and route assignment.</p>
     </div>
-    <span class="vehicle-driver-chip"><span class="vehicle-avatar" aria-hidden="true"><?= h(strtoupper(substr((string) $driver['full_name'], 0, 1))) ?></span><?= h((string) $driver['full_name']) ?></span>
   </div>
 
   <div class="vehicle-status-banner" id="vehicle-status-banner" role="status" aria-live="polite">
-    <span class="vehicle-banner-icon" aria-hidden="true">◷</span>
+    <span class="vehicle-banner-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#clock"></use></svg></span>
     <div><strong id="vehicle-status-title">Loading your vehicle profile</strong><p id="vehicle-status-message">Your approved vehicle information will appear here.</p></div>
+    <div class="vehicle-pending-animation" id="vehicle-pending-animation" aria-hidden="true" hidden>
+      <span class="vehicle-scene-building vehicle-scene-building-one"></span>
+      <span class="vehicle-scene-building vehicle-scene-building-two"></span>
+      <span class="vehicle-scene-tree vehicle-scene-tree-one"></span>
+      <span class="vehicle-scene-tree vehicle-scene-tree-two"></span>
+      <span class="vehicle-scene-road"></span>
+      <div class="vehicle-jeepney">
+        <img src="assets/verification-jeepney.png?v=2" alt="">
+      </div>
+    </div>
   </div>
 
   <div class="vehicle-layout">
     <section class="vehicle-card">
       <div class="vehicle-card-heading">
-        <span class="vehicle-card-icon" aria-hidden="true">▰</span>
+        <span class="vehicle-card-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#bus"></use></svg></span>
         <div><h2>Vehicle details</h2><p>Changes are reviewed before they become official.</p></div>
       </div>
       <form class="vehicle-form" id="vehicle-form" data-api="api/vehicle.php">
@@ -44,19 +53,19 @@ page_start('My jeepney', 'jeepney-profile');
           </label>
         </div>
         <div class="vehicle-form-footer">
-          <span><span aria-hidden="true">◈</span> Only you can edit your vehicle profile.</span>
-          <button class="button button-primary" id="vehicle-submit" type="submit">Submit for review <span aria-hidden="true">→</span></button>
+          <span><span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#shield"></use></svg></span> Only you can edit your vehicle profile.</span>
+          <button class="button button-primary" id="vehicle-submit" type="submit">Submit for review <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span></button>
         </div>
         <p class="vehicle-form-message" id="vehicle-form-message" role="status" aria-live="polite"></p>
       </form>
     </section>
 
     <aside class="vehicle-approved-card">
-      <div class="vehicle-approved-heading"><span class="vehicle-approved-icon" aria-hidden="true">✓</span><div><h2>Current approved details</h2><p>Only verified details are active.</p></div></div>
+      <div class="vehicle-approved-heading"><span class="vehicle-approved-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#check"></use></svg></span><div><h2>Current approved details</h2><p>Only verified details are active.</p></div></div>
       <div class="vehicle-approved-content" id="approved-vehicle-details">
         <p class="vehicle-empty-details">Loading approved vehicle information…</p>
       </div>
-      <div class="vehicle-review-note"><span aria-hidden="true">i</span><p>New and edited details remain pending until an administrator verifies them.</p></div>
+      <div class="vehicle-review-note"><span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#info"></use></svg></span><p>New and edited details remain pending until an administrator verifies them.</p></div>
     </aside>
   </div>
 </section>

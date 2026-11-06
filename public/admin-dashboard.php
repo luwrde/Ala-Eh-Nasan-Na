@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../app/bootstrap.php';
+require_once __DIR__ . '/../app/admin-bootstrap.php';
+require_once __DIR__ . '/../app/admin-trip-count.php';
 $admin = require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $admin = require_admin_role(['owner', 'admin']);
     verify_csrf_token();
 
     $action = $_POST['action'] ?? '';
@@ -45,16 +47,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
         }
 
+        $pdo = db();
+        $pdo->beginTransaction();
         try {
             $update->execute(['id' => $recordId]);
+            if ($update->rowCount() === 1 && $newStatus === 'verified') {
+                $status = $pdo->prepare(
+                    "INSERT IGNORE INTO jeepney_admin_status (jeepney_profile_id, operational_status)
+                     VALUES (?, 'active')"
+                );
+                $status->execute([$recordId]);
+            }
             $_SESSION['admin_flash'] = $update->rowCount() === 1
                 ? 'Vehicle changes ' . ($newStatus === 'verified' ? 'approved' : 'rejected') . ' successfully.'
                 : 'These vehicle changes were already reviewed or could not be found.';
+            if ($update->rowCount() === 1) {
+                record_admin_activity($pdo, $admin, 'vehicle_' . $newStatus, 'jeepney_profile', $recordId);
+            }
+            $pdo->commit();
         } catch (PDOException $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             if ($exception->getCode() !== '23000') {
                 throw $exception;
             }
             $_SESSION['admin_flash'] = 'These vehicle details could not be approved because the plate number is already assigned.';
+        } catch (Throwable $exception) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $exception;
         }
         redirect('admin-dashboard.php#vehicle-review');
     }
@@ -64,16 +87,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Invalid application type.');
     }
 
-    $update = db()->prepare(
-        "UPDATE drivers
-         SET verification_status = :status
-         WHERE id = :id AND verification_status = 'pending_verification'"
-    );
-    $update->execute(['status' => $newStatus, 'id' => $recordId]);
-    $_SESSION['admin_flash'] = $update->rowCount() === 1
-        ? 'Application ' . ($newStatus === 'verified' ? 'approved' : 'rejected') . ' successfully.'
-        : 'This application was already reviewed or could not be found.';
-    redirect('admin-dashboard.php');
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $update = $pdo->prepare(
+            "UPDATE drivers
+             SET verification_status = :status
+             WHERE id = :id AND verification_status = 'pending_verification'"
+        );
+        $update->execute(['status' => $newStatus, 'id' => $recordId]);
+        $_SESSION['admin_flash'] = $update->rowCount() === 1
+            ? 'Application ' . ($newStatus === 'verified' ? 'approved' : 'rejected') . ' successfully.'
+            : 'This application was already reviewed or could not be found.';
+        if ($update->rowCount() === 1) {
+            record_admin_activity($pdo, $admin, 'driver_' . $newStatus, 'driver', $recordId);
+        }
+        $pdo->commit();
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $exception;
+    }
+    redirect('admin-dashboard.php#applications');
 }
 
 $allowedFilters = ['pending_verification', 'verified', 'rejected', 'all'];
@@ -85,15 +121,27 @@ if (!is_string($filter) || !in_array($filter, $allowedFilters, true)) {
 $pdo = db();
 $counts = $pdo->query(
     "SELECT COUNT(*) AS total,
-        COALESCE(SUM(verification_status = 'pending_verification'), 0) AS pending,
-        COALESCE(SUM(verification_status = 'verified'), 0) AS verified,
-        COALESCE(SUM(verification_status = 'rejected'), 0) AS rejected
+        COALESCE(SUM(verification_status = 'pending_verification'), 0) AS pending
      FROM drivers"
 )->fetch();
 $pendingVehicleCount = (int) $pdo->query(
     "SELECT COUNT(*) FROM jeepney_profiles WHERE verification_status = 'pending_verification'"
 )->fetchColumn();
-
+$overview = [
+    'vehicles' => (int) $pdo->query(
+        "SELECT COUNT(*) FROM jeepney_profiles WHERE verification_status = 'verified'"
+    )->fetchColumn(),
+    'drivers' => (int) $pdo->query(
+        "SELECT COUNT(*) FROM drivers d
+         LEFT JOIN driver_admin_status s ON s.driver_id = d.id
+         WHERE d.verification_status = 'verified'
+           AND COALESCE(s.account_status, 'active') = 'active'"
+    )->fetchColumn(),
+    'terminals' => (int) $pdo->query(
+        'SELECT COUNT(*) FROM terminals WHERE is_active = 1'
+    )->fetchColumn(),
+    'trips' => admin_ongoing_trip_count($pdo),
+];
 if ($filter === 'all') {
     $drivers = $pdo->query(
         'SELECT id, full_name, email, phone, license_number, verification_status, created_at
@@ -125,54 +173,67 @@ $vehicleReviews = $pdo->query(
      LIMIT 100"
 )->fetchAll();
 
+$dashboardIcons = ui_icons();
 page_start('Admin dashboard', 'admin-dashboard');
 ?>
 <section class="admin-dashboard">
   <div class="admin-page-heading">
     <div>
       <span class="eyebrow"><span class="eyebrow-dot"></span> ADMINISTRATION</span>
-      <h1>Driver applications</h1>
-      <p>Welcome, <?= h((string) $admin['email']) ?>. Review and manage driver verification.</p>
+      <h1>Operations overview</h1>
+      <p>Welcome, <?= h((string) $admin['email']) ?>. Review transport activity and manage the service.</p>
     </div>
     <span class="admin-access-badge"><span aria-hidden="true">✓</span> Admin access</span>
   </div>
 
-  <div class="admin-stats" aria-label="Application statistics">
-    <a class="admin-stat" href="admin-dashboard.php?status=all">
-      <span class="admin-stat-icon">◎</span><span class="admin-stat-label">Total applications</span>
+  <div class="admin-stats admin-overview-stats" aria-label="Transport operations overview">
+    <a class="admin-stat" href="admin-jeepneys.php">
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['jeepney'] ?></span><span class="admin-stat-label">Registered jeepneys</span></span>
+      <strong><?= h((string) $overview['vehicles']) ?></strong>
+    </a>
+    <a class="admin-stat admin-stat-verified" href="admin-drivers.php">
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['drivers'] ?></span><span class="admin-stat-label">Active drivers</span></span>
+      <strong><?= h((string) $overview['drivers']) ?></strong>
+    </a>
+    <a class="admin-stat" href="admin-routes.php">
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['terminal'] ?></span><span class="admin-stat-label">Available terminals</span></span>
+      <strong><?= h((string) $overview['terminals']) ?></strong>
+    </a>
+    <a class="admin-stat admin-stat-pending" href="admin-trips.php" title="Full jeepneys, drivers in transit, and active tracked trips. Each jeepney is counted once.">
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['routes'] ?></span><span class="admin-stat-label">Ongoing trips</span></span>
+      <strong id="ongoing-trip-count" aria-live="polite" aria-atomic="true"><?= h((string) $overview['trips']) ?></strong>
+      <small id="ongoing-trip-update">Updates every 5 seconds</small>
+    </a>
+  </div>
+
+  <div class="admin-stats admin-application-stats" aria-label="Application statistics">
+    <a class="admin-stat" href="admin-dashboard.php?status=all#applications">
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['application'] ?></span><span class="admin-stat-label">Total applications</span></span>
       <strong><?= h((string) $counts['total']) ?></strong>
     </a>
-    <a class="admin-stat admin-stat-pending" href="admin-dashboard.php?status=pending_verification">
-      <span class="admin-stat-icon">◷</span><span class="admin-stat-label">Awaiting review</span>
+    <a class="admin-stat admin-stat-pending" href="admin-dashboard.php?status=pending_verification#applications">
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['pending'] ?></span><span class="admin-stat-label">Awaiting review</span></span>
       <strong><?= h((string) $counts['pending']) ?></strong>
     </a>
-    <a class="admin-stat admin-stat-verified" href="admin-dashboard.php?status=verified">
-      <span class="admin-stat-icon">✓</span><span class="admin-stat-label">Approved</span>
-      <strong><?= h((string) $counts['verified']) ?></strong>
-    </a>
-    <a class="admin-stat admin-stat-rejected" href="admin-dashboard.php?status=rejected">
-      <span class="admin-stat-icon">×</span><span class="admin-stat-label">Rejected</span>
-      <strong><?= h((string) $counts['rejected']) ?></strong>
-    </a>
     <a class="admin-stat admin-stat-pending" href="#vehicle-review">
-      <span class="admin-stat-icon">▰</span><span class="admin-stat-label">Vehicle reviews</span>
+      <span class="admin-stat-heading"><span class="admin-stat-icon"><?= $dashboardIcons['vehicle-review'] ?></span><span class="admin-stat-label">Vehicle reviews</span></span>
       <strong><?= h((string) $pendingVehicleCount) ?></strong>
     </a>
   </div>
 
   <?php if ($flash !== ''): ?><p class="message message-success admin-flash" role="status"><span aria-hidden="true">✓</span> <?= h((string) $flash) ?></p><?php endif; ?>
 
-  <section class="admin-queue">
+  <section class="admin-queue" id="applications">
     <div class="admin-queue-heading">
       <div>
         <h2><?= $filter === 'pending_verification' ? 'Applications awaiting review' : 'Driver applications' ?></h2>
         <p>Review driver details before approving or rejecting an application.</p>
       </div>
       <nav class="admin-filters" aria-label="Filter applications">
-        <a class="<?= $filter === 'pending_verification' ? 'is-active' : '' ?>" href="admin-dashboard.php?status=pending_verification">Pending</a>
-        <a class="<?= $filter === 'verified' ? 'is-active' : '' ?>" href="admin-dashboard.php?status=verified">Approved</a>
-        <a class="<?= $filter === 'rejected' ? 'is-active' : '' ?>" href="admin-dashboard.php?status=rejected">Rejected</a>
-        <a class="<?= $filter === 'all' ? 'is-active' : '' ?>" href="admin-dashboard.php?status=all">All</a>
+        <a class="<?= $filter === 'pending_verification' ? 'is-active' : '' ?>" <?= $filter === 'pending_verification' ? 'aria-current="page"' : '' ?> href="admin-dashboard.php?status=pending_verification#applications">Pending</a>
+        <a class="<?= $filter === 'verified' ? 'is-active' : '' ?>" <?= $filter === 'verified' ? 'aria-current="page"' : '' ?> href="admin-dashboard.php?status=verified#applications">Approved</a>
+        <a class="<?= $filter === 'rejected' ? 'is-active' : '' ?>" <?= $filter === 'rejected' ? 'aria-current="page"' : '' ?> href="admin-dashboard.php?status=rejected#applications">Rejected</a>
+        <a class="<?= $filter === 'all' ? 'is-active' : '' ?>" <?= $filter === 'all' ? 'aria-current="page"' : '' ?> href="admin-dashboard.php?status=all#applications">All</a>
       </nav>
     </div>
 
@@ -196,7 +257,7 @@ page_start('Admin dashboard', 'admin-dashboard');
               <td data-label="Status"><span class="admin-status status-<?= h((string) $driver['verification_status']) ?>"><?= h(str_replace('_', ' ', (string) $driver['verification_status'])) ?></span></td>
               <?php if ($filter === 'pending_verification' || $filter === 'all'): ?>
               <td data-label="Action">
-                <?php if ($driver['verification_status'] === 'pending_verification'): ?>
+                <?php if ($driver['verification_status'] === 'pending_verification' && ($admin['role'] ?? '') !== 'viewer'): ?>
                   <div class="admin-actions">
                     <form method="post" action="admin-dashboard.php">
                       <?= csrf_field() ?>
@@ -250,7 +311,7 @@ page_start('Admin dashboard', 'admin-dashboard');
               <td data-label="Submitted"><?= h(date('M j, Y', strtotime((string) $vehicle['updated_at']))) ?></td>
               <td data-label="Status"><span class="admin-status status-<?= h((string) $vehicle['verification_status']) ?>"><?= h(str_replace('_', ' ', (string) $vehicle['verification_status'])) ?></span></td>
               <td data-label="Action">
-                <?php if ($vehicle['verification_status'] === 'pending_verification'): ?>
+                <?php if ($vehicle['verification_status'] === 'pending_verification' && ($admin['role'] ?? '') !== 'viewer'): ?>
                   <div class="admin-actions">
                     <?php foreach (['approve' => 'Approve', 'reject' => 'Reject'] as $action => $label): ?>
                     <form method="post" action="admin-dashboard.php#vehicle-review">
@@ -274,4 +335,5 @@ page_start('Admin dashboard', 'admin-dashboard');
     <?php endif; ?>
   </section>
 </section>
+<script src="assets/admin/trip-count.js?v=<?= h((string) filemtime(__DIR__ . '/assets/admin/trip-count.js')) ?>" defer></script>
 <?php page_end(); ?>

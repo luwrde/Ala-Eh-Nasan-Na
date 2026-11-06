@@ -15,25 +15,26 @@ page_start('Driver portal', 'home');
     <h1>Move your<br><span>career forward.</span></h1>
     <p class="hero-description">A simpler way to begin your driver journey. Create your account, submit your details, and keep up with your application—all in one place.</p>
     <div class="hero-actions">
-      <a class="button button-primary" href="register.php">Create your account <span aria-hidden="true">→</span></a>
-      <a class="button button-quiet" href="login.php">I already have an account <span aria-hidden="true">↗</span></a>
+      <a class="button button-primary" href="register.php">Create your account <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow"></use></svg></span></a>
+      <a class="button button-quiet" href="commuter/user-login.html">I already have an account <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#arrow-up"></use></svg></span></a>
+      <a class="button button-quiet" href="commuter/index.html">Find a jeepney <span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#map"></use></svg></span></a>
     </div>
-    <div class="trust-note"><span class="trust-check" aria-hidden="true">✓</span> A clear, secure start to your next opportunity</div>
+    <div class="trust-note"><span class="trust-check" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#check"></use></svg></span> A clear, secure start to your next opportunity</div>
   </div>
   <div class="hero-visual" aria-label="Driver application journey">
     <div class="visual-orbit orbit-one"></div>
     <div class="visual-orbit orbit-two"></div>
     <div class="journey-card">
       <div class="journey-card-top">
-        <span class="journey-icon" aria-hidden="true">✦</span>
+        <span class="journey-icon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#sparkle"></use></svg></span>
         <span class="journey-label">YOUR DRIVER JOURNEY</span>
-        <span class="journey-menu" aria-hidden="true">•••</span>
+        <span class="journey-menu" aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#more"></use></svg></span>
       </div>
       <p class="journey-title">A great next step.</p>
       <p class="journey-subtitle">Get started in three simple steps.</p>
       <div class="journey-steps">
         <div class="journey-step">
-          <span class="step-number step-complete">✓</span>
+          <span class="step-number step-complete"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#check"></use></svg></span>
           <span><strong>Create your account</strong><small>Your profile, your starting point</small></span>
         </div>
         <div class="step-connector"></div>
@@ -49,7 +50,7 @@ page_start('Driver portal', 'home');
       </div>
       <div class="journey-card-footer"><span class="footer-pulse"></span> Your progress, all in one place</div>
     </div>
-    <div class="floating-badge"><span aria-hidden="true">✧</span> Your next chapter</div>
+    <div class="floating-badge"><span aria-hidden="true"><svg class="ui-icon" aria-hidden="true" focusable="false" width="24" height="24"><use href="assets/icons.svg#sparkle"></use></svg></span> Your next chapter</div>
   </div>
 </section>
 <section class="benefits" aria-label="Portal benefits">

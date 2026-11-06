@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+/vendor/
+
+# TLS certificates and private keys belong in local, non-web-accessible storage.
+*.pem
+*.crt
+*.cer
+*.key
+*.p12
+*.pfx

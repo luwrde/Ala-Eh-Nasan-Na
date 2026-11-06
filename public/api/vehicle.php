@@ -17,6 +17,12 @@ if ($driver === null) {
     vehicle_api_response(401, ['error' => 'Sign in as a driver to access your vehicle profile.']);
 }
 $driverId = (int) $driver['id'];
+$access = db()->prepare("SELECT COALESCE(s.account_status, 'active') FROM drivers d LEFT JOIN driver_admin_status s ON s.driver_id = d.id WHERE d.id = ?");
+$access->execute([$driverId]);
+if ($access->fetchColumn() !== 'active') {
+    unset($_SESSION['driver']);
+    vehicle_api_response(403, ['error' => 'This driver account is suspended or deactivated.']);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     try {

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>document.documentElement.classList.add('login-intro-pending');</script>
+  <title>Passenger login | Ala-Eh Nasaan Na?</title>
+  <link rel="icon" href="assets/ala-eh-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/user.css">
+  <link rel="stylesheet" href="assets/login-intro.css?v=8">
+  <script src="assets/user.js?v=12-presence" defer></script>
+  <script src="assets/login-intro.js?v=3" defer onerror="document.documentElement.classList.remove('login-intro-pending')"></script>
+</head>
+<body class="passenger-page passenger-login-page">
+  <section class="login-intro" id="login-intro" aria-labelledby="login-intro-title" hidden>
+    <div class="intro-brand"><img src="assets/ala-eh-logo.png" alt="" width="48" height="48"><div><strong>Ala-Eh Nasaan Na?</strong><span>Jeepney Locator</span></div></div>
+    <div class="intro-copy"><span>Your everyday journey</span><h1 id="login-intro-title" tabindex="-1">Your next ride starts here.</h1><p id="login-intro-instructions">Tap the jeepney to start your journey.</p></div>
+    <div class="intro-streetscape" aria-hidden="true">
+      <div class="intro-town-buildings"></div>
+      <span class="intro-walker intro-walker-one"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m10 17 8-1 3 16H9l1-15Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#bf947b"/><circle cx="14" cy="8" r="6" fill="#d5ae91"/><path d="M8 8c-1-9 13-10 12-1l-5-1-2-2-1 4H8Z" fill="#46566b"/></svg></span>
+      <span class="intro-walker intro-walker-two"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m10 17 8-1 3 16H9l1-15Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#b18a70"/><circle cx="14" cy="8" r="6" fill="#c99f80"/><path d="M8 10C5 0 21-1 20 10l-4-5-4 4H8Z" fill="#46566b"/></svg></span>
+      <span class="intro-walker intro-walker-three"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m10 17 8-1 3 16H9l1-15Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#bf947b"/><circle cx="14" cy="8" r="6" fill="#d5ae91"/><path d="M8 8c-1-9 13-10 12-1l-5-1-2-2-1 4H8Z" fill="#46566b"/></svg></span>
+      <span class="intro-walker intro-walker-four"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m9 17 9-1 4 17H8l1-16Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#af846b"/><circle cx="14" cy="8" r="6" fill="#c49a7b"/><path d="M8 7c0-8 13-8 12 1l-6-3-6 2Z" fill="#657181"/></svg></span>
+      <span class="intro-walker intro-walker-five"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m10 17 8-1 4 17H8l2-16Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#bf947b"/><circle cx="14" cy="8" r="6" fill="#d5ae91"/><path d="M8 12C3 1 22-3 21 13l-4-4-3-6-3 8-3 1Z" fill="#566175"/></svg></span>
+      <span class="intro-walker intro-walker-six"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m10 17 8-1 3 16H9l1-15Z" fill="currentColor"/><path d="m8 23-2 7h6l-1-7H8Z" fill="#c3ad91"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#af846b"/><circle cx="14" cy="8" r="6" fill="#c49a7b"/><path d="M8 8c-1-8 13-9 12-1l-6-3-3 4H8Z" fill="#46566b"/></svg></span>
+      <span class="intro-walker intro-walker-seven"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m8 19-2 3 1 10h5V20l-4-1Z" fill="#8e9cb1"/><path d="m10 17 8-1 3 16H9l1-15Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#bf947b"/><circle cx="14" cy="8" r="6" fill="#d5ae91"/><path d="M8 7c-1-8 13-8 12 0H8Zm-1 0h16" stroke="#63738e" stroke-width="2" fill="#63738e"/></svg></span>
+      <span class="intro-walker intro-walker-eight"><svg viewBox="0 0 28 50" fill="none"><ellipse cx="14" cy="48" rx="10" ry="1.5" fill="#8da4bb" opacity=".18"/><path class="walker-leg walker-leg-back" d="m14 30 4 10 5 6"/><path class="walker-arm walker-arm-back" d="m14 18 7 9 3 1"/><path d="m10 17 8-1 4 17H8l2-16Z" fill="currentColor"/><path class="walker-leg walker-leg-front" d="m13 30-2 10-5 7"/><path class="walker-arm walker-arm-front" d="m11 18-4 9-3 2"/><path d="M12 14v4h5v-5" fill="#b18a70"/><circle cx="14" cy="8" r="6" fill="#c99f80"/><path d="M8 11C4 0 21-1 20 11l-5-7-3 7H8Z" fill="#596273"/><circle cx="9" cy="3" r="3" fill="#596273"/></svg></span>
+    </div>
+    <div class="intro-road" aria-hidden="true"></div>
+    <span class="intro-tap-cue" aria-hidden="true">Tap to log in</span>
+    <button class="intro-jeepney" id="jeepney-pull" type="button" aria-label="Start the jeepney and open sign in" aria-describedby="login-intro-instructions intro-keyboard-hint"><img src="assets/jeepney-intro.svg" alt="" width="240" height="128" draggable="false"><span class="intro-exhaust" aria-hidden="true"><i></i><i></i><i></i></span></button>
+  </section>
+  <div class="login-scene" id="login-scene">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="user-login.html"><img class="brand-mark" src="assets/ala-eh-logo.png" alt=""><span class="brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span></a>
+      <nav class="header-portal-nav" aria-label="Portal information">
+      <details class="driver-dropdown" id="driver-dropdown" name="header-menu">
+        <summary>Are you a driver? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="dropdown-popover">
+        <div class="driver-dropdown-panel">
+          <a class="driver-login-link" id="open-driver-login" href="http://localhost/Ala-Eh_Nasan_Na_Projec/public/login.php"><span>Driver sign in<small>Access your driver account</small></span><span aria-hidden="true">&#8594;</span></a>
+        </div>
+        </div>
+      </details>
+      <details class="driver-dropdown about-dropdown" id="about-dropdown" name="header-menu">
+        <summary>About Us <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="dropdown-popover about-popover">
+        <section class="driver-dropdown-panel about-panel" aria-labelledby="about-title" tabindex="0">
+          <span class="form-kicker">ALA-EH NASAAN NA?</span>
+          <h2 id="about-title">A simpler everyday commute.</h2>
+          <p>Ala-Eh Nasaan Na? is a jeepney locator designed to make everyday travel easier for passengers and drivers.</p>
+          <p>It aims to bring route information and live jeepney locations into one place, helping commuters plan their trips with less guesswork and find rides along their route.</p>
+          <p>Our goal is a more convenient, connected commute for the community.</p>
+        </section>
+        </div>
+      </details>
+      </nav>
+    </div>
+  </header>
+  <main class="site-main" id="main-content">
+    <section class="auth-layout" aria-labelledby="login-title">
+      <div class="auth-aside">
+        <span class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span> YOUR EVERYDAY JOURNEY</span>
+        <h1>Your next ride.<br><span>A little easier.</span></h1>
+        <p>A familiar route or somewhere new. Start your journey with Ala-Eh Nasaan Na?</p>
+        <div class="aside-note"><span class="aside-note-icon" aria-hidden="true">&#8599;</span><span><strong>Made for your daily commute</strong><small>Your passenger dashboard, all in one place.</small></span></div>
+        <div class="aside-decoration" aria-hidden="true">A</div>
+      </div>
+      <div class="auth-panel">
+        <div class="form-heading"><span class="form-kicker">PASSENGER PORTAL</span><h2 id="login-title" tabindex="-1">Welcome back.</h2><p>Sign in and get ready for your next journey.</p></div>
+        <p class="message message-error" id="login-error" role="alert" hidden></p>
+        <form class="form-stack" id="passenger-login" aria-describedby="demo-description">
+          <label for="email">Email address<input id="email" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+          <div class="passenger-password-field"><label for="password">Password</label><div class="passenger-password"><input id="password" type="password" required autocomplete="off" placeholder="Enter your password"><button type="button" id="toggle-password" aria-controls="password" aria-pressed="false">Show</button></div></div>
+          <button class="button button-primary button-submit" type="submit">Sign in <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <p class="auth-switch" id="signup-prompt">New here? <button type="button" id="open-register">Create account</button></p>
+        <form class="form-stack" id="passenger-register" aria-describedby="registration-note" hidden>
+          <label for="register-name">Full name<input id="register-name" name="name" autocomplete="name" required maxlength="100" placeholder="Enter your full name"></label>
+          <label for="register-email">Email address<input id="register-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+          <label for="register-password">Password<input id="register-password" name="password" type="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters"></label>
+          <label for="confirm-password">Confirm password<input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required minlength="8" placeholder="Re-enter your password"></label>
+          <button class="button button-primary button-submit" type="submit">Create account <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <p class="auth-switch" id="signin-prompt" hidden>Already have an account? <button type="button" id="open-login">Sign in</button></p>
+        <p class="form-security" id="registration-note" hidden>Create a commuter account using your own email and password.</p>
+        <p class="form-security" id="registration-result" role="status" hidden></p>
+        <form class="form-stack" id="driver-login" aria-describedby="driver-note" hidden>
+          <label for="driver-email">Email address<input id="driver-email" name="email" type="email" autocomplete="username" required placeholder="driver@example.com"></label>
+          <label for="driver-password">Password<input id="driver-password" name="password" type="password" autocomplete="current-password" required placeholder="Enter your password"></label>
+          <button class="button button-primary button-submit" type="submit">Driver sign in <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <p class="auth-switch" id="passenger-prompt" hidden>Riding as a passenger? <button type="button" id="back-to-passenger">Passenger sign in</button></p>
+        <p class="form-security" id="driver-note" hidden>Driver sign-in preview. Use sample details only.</p>
+        <p class="form-security" id="driver-result" role="status" hidden></p>
+        <noscript><p class="message message-error">Enable JavaScript to use this interface preview.</p></noscript>
+        <p class="form-security" id="demo-description">Sign in with your registered commuter or administrator account.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><span>Ala-Eh Nasaan Na? Jeepney Locator</span><span>Built for the road ahead.</span></div></footer>
+  </div>
+</body>
+</html>
