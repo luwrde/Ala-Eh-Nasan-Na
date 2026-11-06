@@ -1,0 +1,47 @@
+/* Keep the passenger navigation at the bottom at every viewport width. */
+.settings-account { margin-top: 24px; }
+.settings-account > p { min-height: 0; margin-bottom: 16px; }
+
+:root { --passenger-bottom-nav-height: 56px; }
+.passenger-dashboard-page .top-header { min-height: 56px; padding: 0 16px; gap: 10px; }
+.header-brand { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; gap: 8px; min-width: 44px; min-height: 44px; color: var(--blue-950); text-decoration: none; }
+.header-brand img { display: block; width: 36px; height: 36px; object-fit: contain; }
+.header-brand-name { display: grid; gap: 2px; font-family: var(--font-display); font-size: 13px; font-weight: 800; line-height: 1.2; }
+.header-brand-name span { color: var(--muted); font-family: var(--font-sans); font-size: 9px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.header-brand:focus-visible { outline: 2px solid var(--blue-400); outline-offset: 2px; border-radius: 8px; }
+/* Preserve the accessible page heading without repeating the module beside the brand. */
+.passenger-dashboard-page .top-header .page-title { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.passenger-dashboard-page .passenger-profile { gap: 8px; }
+.passenger-dashboard-page .passenger-profile-avatar { flex-basis: 30px; width: 30px; height: 30px; font-size: 12px; }
+.passenger-dashboard-page .passenger-profile-name { font-size: 12px; }
+.passenger-dashboard-page .passenger-profile-role { font-size: 10px; }
+.map-page .system-map-panel { top: 72px; }
+html { scroll-padding-bottom: calc(var(--passenger-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 16px); }
+.passenger-page.has-sidebar .app-content { margin-left: 0; padding-bottom: calc(var(--passenger-bottom-nav-height) + env(safe-area-inset-bottom, 0px)); }
+#passenger-sidebar,
+#passenger-sidebar.mobile-open {
+  position: fixed; display: flex; flex-direction: column; z-index: 1000;
+  top: auto; right: 0; bottom: 0; left: 0;
+  width: 100%; height: calc(var(--passenger-bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  padding: 0 env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  transform: none; transition: none;
+  border-top: 1px solid var(--line); border-right: 0;
+  background: var(--surface, var(--white));
+  box-shadow: 0 -4px 20px rgb(15 23 42 / 7%);
+}
+#passenger-sidebar .sidebar-header,
+#passenger-sidebar .sidebar-footer,
+#passenger-menu { display: none; }
+#passenger-sidebar .sidebar-nav { display: block; flex: 1; width: min(100%, 560px); margin: 0 auto; padding: 3px 8px; overflow: visible; }
+#passenger-sidebar .sidebar-menu { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; height: 100%; padding: 0; }
+#passenger-sidebar .sidebar-link { flex-direction: column; justify-content: center; min-width: 0; min-height: 44px; gap: 3px; padding: 4px 2px; border-radius: 10px; font-size: 10px; }
+#passenger-sidebar .sidebar-link-text { white-space: nowrap; line-height: 1.2; }
+#passenger-sidebar .sidebar-link .dashboard-icon { width: 18px; height: 18px; }
+#passenger-sidebar .sidebar-link.active { background: var(--blue-50); color: var(--blue-700); box-shadow: none; }
+#passenger-sidebar .sidebar-link.active .sidebar-link-icon { transform: none; }
+#passenger-sidebar .sidebar-link:focus-visible { outline: 2px solid var(--blue-400); outline-offset: -2px; }
+.desktop-nav-label { display: none; }
+.mobile-nav-label { display: inline; }
+.passenger-dashboard-page .map-location-prompt,
+.passenger-dashboard-page .profile-toast { bottom: calc(var(--passenger-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 12px); }
+@media (max-width: 640px) { .header-brand-name { display: none; } }

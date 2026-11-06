@@ -1,0 +1,358 @@
+{
+  "reviewed_on": "2026-11-02",
+  "geocoding": [
+    {
+      "query": "Bolbok, Batangas City, Batangas, Philippines",
+      "url": "https://nominatim.openstreetmap.org/search?q=Bolbok%2C+Batangas+City%2C+Batangas%2C+Philippines&format=jsonv2&addressdetails=1&limit=3",
+      "results": [
+        {
+          "place_id": 259034219,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "relation",
+          "osm_id": 6219237,
+          "lat": "13.7763050",
+          "lon": "121.0544189",
+          "category": "boundary",
+          "type": "administrative",
+          "place_rank": 20,
+          "importance": 0.13338805142290378,
+          "addresstype": "suburb",
+          "name": "Bolbok",
+          "display_name": "Bolbok, Banaba Ibaba, Batangas City, Batangas, Calabarzon, 4200, Philippines",
+          "address": {
+            "suburb": "Bolbok",
+            "village": "Banaba Ibaba",
+            "city": "Batangas City",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4200",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7674890",
+            "13.7853417",
+            "121.0438727",
+            "121.0646837"
+          ]
+        },
+        {
+          "place_id": 257995744,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "node",
+          "osm_id": 1450800875,
+          "lat": "13.7724736",
+          "lon": "121.0492225",
+          "category": "place",
+          "type": "quarter",
+          "place_rank": 20,
+          "importance": 0.13338805142290378,
+          "addresstype": "quarter",
+          "name": "Bolbok",
+          "display_name": "Bolbok, Batangas City, Batangas, Calabarzon, 4200, Philippines",
+          "address": {
+            "quarter": "Bolbok",
+            "suburb": "Bolbok",
+            "city": "Batangas City",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4200",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7624736",
+            "13.7824736",
+            "121.0392225",
+            "121.0592225"
+          ]
+        }
+      ]
+    },
+    {
+      "query": "Santa Rita Karsada, Batangas City, Philippines",
+      "url": "https://nominatim.openstreetmap.org/search?q=Santa+Rita+Karsada%2C+Batangas+City%2C+Philippines&format=jsonv2&addressdetails=1&limit=3",
+      "results": [
+        {
+          "place_id": 259017266,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "node",
+          "osm_id": 3914585071,
+          "lat": "13.7781251",
+          "lon": "121.0409803",
+          "category": "place",
+          "type": "quarter",
+          "place_rank": 20,
+          "importance": 0.13338805142290378,
+          "addresstype": "quarter",
+          "name": "Santa Rita Karsada",
+          "display_name": "Santa Rita Karsada, Santa Rita Aplaya, Batangas City, Batangas, Calabarzon, 4200, Philippines",
+          "address": {
+            "quarter": "Santa Rita Karsada",
+            "village": "Santa Rita Aplaya",
+            "city": "Batangas City",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4200",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7681251",
+            "13.7881251",
+            "121.0309803",
+            "121.0509803"
+          ]
+        }
+      ]
+    },
+    {
+      "query": "San Pascual Municipal Hall, Batangas, Philippines",
+      "url": "https://nominatim.openstreetmap.org/search?q=San+Pascual+Municipal+Hall%2C+Batangas%2C+Philippines&format=jsonv2&addressdetails=1&limit=3",
+      "results": [
+        {
+          "place_id": 258839818,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "node",
+          "osm_id": 7853237085,
+          "lat": "13.7910349",
+          "lon": "121.0238979",
+          "category": "office",
+          "type": "government",
+          "place_rank": 30,
+          "importance": 0.00004724269474322145,
+          "addresstype": "office",
+          "name": "San Pascual Municipal Hall",
+          "display_name": "San Pascual Municipal Hall, Aquino Avenue, San Antonio, San Mateo, San Pascual, Batangas, Calabarzon, 4204, Philippines",
+          "address": {
+            "office": "San Pascual Municipal Hall",
+            "road": "Aquino Avenue",
+            "quarter": "San Antonio",
+            "village": "San Mateo",
+            "town": "San Pascual",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4204",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7909849",
+            "13.7910849",
+            "121.0238479",
+            "121.0239479"
+          ]
+        }
+      ]
+    },
+    {
+      "query": "Bauan Municipal Hall, Batangas, Philippines",
+      "url": "https://nominatim.openstreetmap.org/search?q=Bauan+Municipal+Hall%2C+Batangas%2C+Philippines&format=jsonv2&addressdetails=1&limit=3",
+      "results": [
+        {
+          "place_id": 259611748,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "way",
+          "osm_id": 312556517,
+          "lat": "13.7937808",
+          "lon": "121.0071323",
+          "category": "amenity",
+          "type": "townhall",
+          "place_rank": 30,
+          "importance": 0.00004724269474322145,
+          "addresstype": "amenity",
+          "name": "Bauan Municipal Hall",
+          "display_name": "Bauan Municipal Hall, F. Mangobos Street, Poblacion 1, Manghinao Proper, Bauan, Batangas, Calabarzon, 4201, Philippines",
+          "address": {
+            "amenity": "Bauan Municipal Hall",
+            "road": "F. Mangobos Street",
+            "neighbourhood": "Poblacion 1",
+            "quarter": "Manghinao Proper",
+            "town": "Bauan",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4201",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7936662",
+            "13.7939196",
+            "121.0068042",
+            "121.0074695"
+          ]
+        },
+        {
+          "place_id": 258933009,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "node",
+          "osm_id": 6575970986,
+          "lat": "13.7934522",
+          "lon": "121.0072702",
+          "category": "highway",
+          "type": "bus_stop",
+          "place_rank": 30,
+          "importance": 0.00004724269474322145,
+          "addresstype": "highway",
+          "name": "Bauan Municipal Hall",
+          "display_name": "Bauan Municipal Hall, F. Mangobos Street, Poblacion 1, Manghinao Proper, Bauan, Batangas, Calabarzon, 4201, Philippines",
+          "address": {
+            "highway": "Bauan Municipal Hall",
+            "road": "F. Mangobos Street",
+            "neighbourhood": "Poblacion 1",
+            "quarter": "Manghinao Proper",
+            "town": "Bauan",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4201",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7934022",
+            "13.7935022",
+            "121.0072202",
+            "121.0073202"
+          ]
+        }
+      ]
+    },
+    {
+      "query": "Mabini Municipal Hall, Batangas, Philippines",
+      "url": "https://nominatim.openstreetmap.org/search?q=Mabini+Municipal+Hall%2C+Batangas%2C+Philippines&format=jsonv2&addressdetails=1&limit=3",
+      "results": [
+        {
+          "place_id": 258660076,
+          "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+          "osm_type": "way",
+          "osm_id": 369853924,
+          "lat": "13.7481712",
+          "lon": "120.9419955",
+          "category": "amenity",
+          "type": "townhall",
+          "place_rank": 30,
+          "importance": 0.000047680628671656634,
+          "addresstype": "amenity",
+          "name": "Mabini Municipal Hall",
+          "display_name": "Mabini Municipal Hall, R. P. Amurao Street, Poblacion, Bulacan, Mabini, Batangas, Calabarzon, 4202, Philippines",
+          "address": {
+            "amenity": "Mabini Municipal Hall",
+            "road": "R. P. Amurao Street",
+            "quarter": "Poblacion",
+            "village": "Bulacan",
+            "town": "Mabini",
+            "state": "Batangas",
+            "ISO3166-2-lvl4": "PH-BTG",
+            "region": "Calabarzon",
+            "ISO3166-2-lvl3": "PH-40",
+            "postcode": "4202",
+            "country": "Philippines",
+            "country_code": "ph"
+          },
+          "boundingbox": [
+            "13.7480464",
+            "13.7483526",
+            "120.9418914",
+            "120.9420996"
+          ]
+        }
+      ]
+    }
+  ],
+  "junction": {
+    "source_url": "https://api.openstreetmap.org/api/0.6/map?bbox=120.997,13.793,121.003,13.799",
+    "node_id": 260212541,
+    "coordinates": [
+      121.0007015,
+      13.7957068
+    ],
+    "connected_way_ids": [
+      388815048,
+      388815049,
+      883773183
+    ],
+    "connected_road_names": [
+      "National Highway 436",
+      "F. Mangobos Street",
+      "Bauan-Mabini Road"
+    ]
+  },
+  "routing": {
+    "provider_url": "https://routing.openstreetmap.de/routed-car/route/v1/driving/121.06235,13.78986;121.0492225,13.7724736;121.0409803,13.7781251;121.0238979,13.7910349;121.0071323,13.7937808;121.0007015,13.7957068;120.9419955,13.7481712?overview=full&geometries=geojson&steps=false&alternatives=false&radiuses=200%3B200%3B200%3B200%3B200%3B200%3B200",
+    "generated_at": "2026-11-02T10:04:09.104Z",
+    "distance_meters": 19612,
+    "duration_seconds": 1842.3,
+    "vertices": 562,
+    "snapped_references": [
+      {
+        "coordinates": [
+          121.062378,
+          13.78992
+        ],
+        "distance_meters": 7.296175491,
+        "name": ""
+      },
+      {
+        "coordinates": [
+          121.049205,
+          13.772454
+        ],
+        "distance_meters": 2.947042622,
+        "name": "National Highway 436"
+      },
+      {
+        "coordinates": [
+          121.040982,
+          13.778129
+        ],
+        "distance_meters": 0.4925699839,
+        "name": "National Highway 436"
+      },
+      {
+        "coordinates": [
+          121.023863,
+          13.791039
+        ],
+        "distance_meters": 3.810624635,
+        "name": ""
+      },
+      {
+        "coordinates": [
+          121.007178,
+          13.793591
+        ],
+        "distance_meters": 21.60162087,
+        "name": ""
+      },
+      {
+        "coordinates": [
+          121.000702,
+          13.795707
+        ],
+        "distance_meters": 0,
+        "name": "National Highway 436 / Bauan-Mabini Road / F. Mangobos Street"
+      },
+      {
+        "coordinates": [
+          120.941869,
+          13.748175
+        ],
+        "distance_meters": 13.74360203,
+        "name": ""
+      }
+    ]
+  },
+  "limitations": "Map references and a generated driving preview only. No operator-confirmed jeepney road trace, stop, fare, schedule, or final endpoint."
+}

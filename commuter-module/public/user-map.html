@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script src="assets/language.js?v=1"></script>
+  <script src="assets/preferences.js?v=15"></script>
+  <link rel="stylesheet" href="assets/account-menu.css?v=1">
+  <script src="assets/account-menu.js?v=1" defer></script>
+  <title>Map | Ala-Eh Nasaan Na?</title>
+  <link rel="icon" href="assets/ala-eh-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css?v=20261101-dashboard">
+  <link rel="stylesheet" href="assets/user.css?v=20261101-dashboard">
+  <link rel="stylesheet" href="assets/dashboard.css?v=7">
+  <link rel="stylesheet" href="assets/terminals.css?v=8">
+  <link rel="stylesheet" href="assets/preferences.css?v=6">
+  <link rel="stylesheet" href="assets/map.css?v=11">
+  <link rel="stylesheet" href="assets/jeepney-tracing.css?v=4">
+  <script src="assets/user.js?v=11" defer></script>
+  <script id="driver-routing-script" src="../../public/assets/jeepney-routing.js?v=20261106-shared-route" defer></script>
+  <script type="module" src="assets/map.js?v=55"></script>
+  <link rel="stylesheet" href="assets/drawer-navigation.css?v=2">
+  <link rel="stylesheet" href="assets/map-experience.css?v=14">
+</head>
+<body class="passenger-page has-sidebar passenger-dashboard-page drawer-navigation map-page map-experience">
+  <div class="app-layout">
+    <aside class="sidebar" id="passenger-sidebar" role="dialog" aria-modal="true" aria-label="Passenger navigation" aria-hidden="true" inert>
+      <div class="sidebar-header"><a class="sidebar-brand" href="user-map.html"><img class="sidebar-brand-mark" src="assets/ala-eh-logo.png" alt="" width="44" height="44"><span class="sidebar-brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span></a><button id="passenger-menu-close" type="button" aria-label="Close navigation"><svg class="dashboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+      <div class="drawer-profile"><div class="passenger-profile" aria-label="Passenger profile">
+          <div class="passenger-profile-avatar" aria-hidden="true">P</div>
+          <div class="passenger-profile-info"><span class="passenger-profile-name">Passenger</span><span class="passenger-profile-role">Passenger</span></div>
+        </div></div>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <div class="sidebar-menu">
+          <a href="user-dashboard.html" class="sidebar-link"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="sidebar-link-text">Dashboard</span></a>
+          <a href="user-terminals.html" class="sidebar-link"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M8 10h2m4 0h2"/></svg><span class="sidebar-link-text"><span class="desktop-nav-label">Terminals &amp; Boarding Points</span><span class="mobile-nav-label">Terminals</span></span></a>
+          <a href="user-map.html" class="sidebar-link active" aria-current="page"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg><span class="sidebar-link-text">Map</span></a>
+          <a href="user-settings.html" class="sidebar-link"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/></svg><span class="sidebar-link-text">Settings</span></a>
+        </div>
+        <div class="sidebar-footer"><button class="sidebar-logout" id="passenger-logout" type="button"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5M9 12h12m-5-5 5 5-5 5"/></svg><span class="sidebar-link-text">Log out</span></button></div>
+      </nav>
+    </aside>
+    <button id="passenger-backdrop" class="navigation-backdrop" type="button" tabindex="-1" aria-label="Close navigation" hidden></button>
+    <div class="app-content">
+      <header class="top-header">
+        <a class="header-brand" href="user-map.html" aria-label="Ala-Eh Nasaan Na? home"><img src="assets/ala-eh-logo.png" alt="" width="36" height="36"><span class="header-brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span></a>
+        <button class="mobile-menu-toggle" id="passenger-menu" type="button" aria-label="Open navigation" aria-controls="passenger-sidebar" aria-expanded="false"><span></span><span></span><span></span></button><button class="passenger-back-button" id="passenger-back" type="button" aria-label="Go back" title="Go back" hidden>&#8592;</button>
+        <h1 class="page-title">Map</h1>
+
+      </header>
+      <main class="site-main" id="main-content">
+        <div class="map-canvas-shell"><div class="terminal-map" id="system-map" aria-label="Map of Batangas City and boarding points" tabindex="0" hidden></div></div>
+        <div id="map-location-indicator" class="map-location-indicator" data-state="locating" role="status"><span aria-hidden="true"></span><span id="map-location-label">Finding your location&hellip;</span></div>
+        <p id="nearest-terminal-status" class="nearest-terminal-status" role="status" hidden></p>
+        <button id="route-preview-toggle" class="route-preview-toggle" type="button" aria-pressed="false" aria-controls="route-preview-panel" disabled hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="19" r="2"/><path d="M8 5h8a4 4 0 0 1 0 8H8a3 3 0 0 0 0 6h8"/></svg><span><strong id="route-preview-toggle-name">Jeepney route</strong><small>Pending Verification</small></span></button>
+        <p id="route-preview-message" class="route-preview-message" role="status" hidden></p>
+        <section id="route-preview-panel" class="route-preview-panel" aria-labelledby="route-preview-title" hidden>
+          <div class="route-preview-heading"><h2 id="route-preview-title"></h2><button id="route-preview-minimize" type="button" aria-label="Minimize route details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+          <span class="trace-verification">Pending Verification</span>
+          <p>Road-routing preview through preliminary references. The actual jeepney path and final stop need confirmation.</p>
+          <dl><div><dt>Starting point</dt><dd id="route-preview-start"></dd></div><div><dt>Destination</dt><dd id="route-preview-end"></dd></div><div><dt>Preview road distance</dt><dd id="route-preview-distance"></dd></div></dl>
+          <h3>Preliminary waypoints</h3><ol id="route-preview-waypoints"></ol>
+          <p id="route-preview-end-note"></p>
+          <p class="route-preview-key"><i aria-hidden="true"></i>Start reference<i aria-hidden="true"></i>Provisional endpoint</p>
+          <p class="route-provider-note">Road geometry: FOSSGIS / OSRM using OpenStreetMap. Grey markers are preliminary references, not confirmed jeepney stops.</p>
+          <div class="route-preview-actions"><button id="route-preview-fit" type="button">Fit route</button><button id="route-preview-hide" type="button">Hide route</button></div>
+        </section>
+        <div class="map-floating-controls" role="group" aria-label="Map controls">
+          <button id="map-search" type="button" title="Search terminals" aria-label="Search terminals" aria-controls="map-terminal-panel" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span class="map-search-label">Search</span></button>
+          <button id="map-locate" type="button" title="My location and closest terminal" aria-label="My location and closest terminal" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg><span class="map-control-label">My location</span></button>
+        </div>
+        <div id="map-load-notice" class="map-load-notice"><p id="system-map-status" class="map-status" role="status">Loading map&hellip;</p><button id="retry-map" type="button" hidden>Retry map</button></div>
+
+        <section id="map-terminal-panel" class="map-terminal-panel" aria-labelledby="map-panel-title" hidden>
+          <div class="map-panel-header"><h2 id="map-panel-title">Find a terminal</h2><button id="map-panel-close" type="button" aria-label="Close terminal panel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+          <div class="map-panel-body" id="map-panel-body">
+            <form id="map-search-form" class="map-terminal-search" role="search" aria-label="Search terminals">
+              <label for="map-search-query">Search terminals</label>
+              <div class="map-search-input"><input id="map-search-query" type="search" placeholder="Name, landmark, or area" autocomplete="off" aria-controls="map-locations"><button id="map-search-clear" type="button" aria-label="Clear terminal search" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+              <button id="map-search-nearest" type="button" disabled>Closest to me</button>
+            </form>
+            <div id="map-selection-status" class="map-selection-status" role="status" hidden><span id="map-selection-nearest" class="map-nearest-label" hidden>Closest mapped location</span><strong id="map-selection-name"></strong><span id="map-selection-note"></span></div>
+            <section id="selected-terminal-panel" class="map-route-panel" aria-labelledby="route-terminal-name" hidden>
+                <h2 id="route-terminal-name"></h2><p id="route-terminal-address"></p>
+                <div id="selected-boarding-routes"></div>
+                <p id="route-coordinate-note" class="route-coordinate-note" hidden></p>
+                <p id="route-status" role="status"></p>
+                <div id="route-result" class="map-route-result" aria-live="polite" hidden><div><span id="route-distance-label">Estimated distance</span><strong id="route-distance"></strong></div></div>
+                <div class="map-route-actions"><button id="estimate-route" type="button" disabled aria-describedby="route-privacy">Estimate distance</button><a id="route-directions" target="_blank" rel="noopener noreferrer" hidden>Get Directions</a><a id="route-google-maps" target="_blank" rel="noopener noreferrer" hidden>Open in Google Maps</a></div>
+                <p id="route-privacy" class="route-provider-note" hidden>Path estimates by FOSSGIS / OSRM. My location, Closest to me, and Estimate distance send your location and the selected destination to the routing service.</p>
+                <p class="route-provider-note"><a href="https://routing.openstreetmap.de/about.html" target="_blank" rel="noopener noreferrer">Routing service</a> &middot; <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener noreferrer">Fix the map</a></p>
+              </section>
+            <section class="map-locations-panel" aria-label="Boarding locations"><p id="map-result-count" class="terminal-result-count" role="status">Loading locations&hellip;</p><div id="map-locations" role="region" aria-label="Scrollable terminal list" tabindex="0"></div></section>
+            <p id="user-location-status" role="status"></p>
+            <div class="map-legend" aria-label="Map legend"><span><i aria-hidden="true"></i>Terminals &amp; boarding points</span><span><i class="user-dot" aria-hidden="true"></i>Your location</span></div>
+            <p class="map-proximity-note">Use the crosshair to show the closest mapped boarding point and estimate the distance along mapped paths. Select Estimate distance to draw the path.</p>
+          </div>
+        </section>
+        <div id="trace-legend" class="trace-legend" aria-label="Jeepney route legend" hidden><span><i id="trace-line-key" class="trace-line-key" aria-hidden="true"></i><span id="trace-line-label">Verified jeepney path</span></span><span><i class="trace-start-key" aria-hidden="true"></i>Route start</span><span><i class="trace-end-key" aria-hidden="true"></i>Route endpoint</span><span><i class="trace-stop-key" aria-hidden="true"></i>Verified stop / landmark</span></div>
+        <section id="jeepney-tracing-panel" class="jeepney-tracing" aria-labelledby="jeepney-tracing-title" hidden>
+            <div class="trace-heading"><div><h2 id="jeepney-tracing-title">Jeepney route tracing</h2><p>Explore established routes between Batangas City and Mabini.</p></div><span id="trace-verification" class="trace-verification">Verification pending</span></div>
+            <form id="jeepney-trace-form" class="trace-form" aria-label="Select a jeepney route">
+              <div class="trace-fields">
+                <label for="trace-end">Destination / endpoint<select id="trace-end" disabled><option value="">Loading locations…</option></select></label>
+                <label for="trace-variant" id="trace-variant-field" hidden>Saved route<select id="trace-variant" disabled></select></label>
+              </div>
+              <div class="trace-actions"><button id="trace-show" type="submit" disabled>Show saved route</button><button id="trace-preview" type="button" disabled aria-describedby="trace-preview-note">Driving preview</button><button id="trace-reverse" type="button" disabled>Reverse Route</button><button id="trace-reset" type="button" disabled>Reset Map</button><button id="trace-retry" type="button" hidden>Retry saved routes</button></div>
+            </form>
+            <p id="trace-status" class="trace-status" role="status">Loading saved jeepney paths…</p>
+            <p id="trace-preview-note" class="trace-help">Driving previews use FOSSGIS / OSRM and may differ from actual jeepney routes. Terminal choices are map references; service availability and exact boarding points require verification.</p>
+            <details class="trace-details"><summary>Route details</summary>
+              <dl class="trace-facts"><div><dt>Starting terminal</dt><dd id="trace-detail-start"></dd></div><div><dt>Final endpoint</dt><dd id="trace-detail-end"></dd></div><div><dt>Travel direction</dt><dd id="trace-detail-direction"></dd></div><div><dt>Mapped path distance</dt><dd id="trace-detail-distance"></dd></div><div><dt>Verification status</dt><dd id="trace-detail-status"></dd></div><div><dt>Verification source</dt><dd id="trace-detail-source"></dd></div><div><dt>Last updated</dt><dd id="trace-detail-updated"></dd></div></dl>
+              <div class="trace-detail-lists"><div><h3>Ordered roads traveled</h3><ol id="trace-roads"></ol></div><div><h3>Verified stops and landmarks</h3><ol id="trace-stops"></ol></div></div>
+            </details>
+          </section>
+        <noscript><p class="map-load-notice">Enable JavaScript to use the map.</p></noscript>
+      </main>
+    </div>
+  </div>
+  <dialog id="location-access" class="profile-dialog location-access" closedby="none" aria-labelledby="location-access-title" aria-describedby="location-access-message location-access-help">
+    <div id="location-jeepney-loader" class="location-jeepney-loader" aria-hidden="true" hidden><div class="location-jeepney-road"></div><div class="location-jeepney-moving"><img src="assets/jeepney-intro.svg" alt="" width="120" height="64"></div></div>
+    <h2 id="location-access-title">Enable location to use the map</h2>
+    <p id="location-access-message" role="status">Allow location access to position the map and find terminals near you.</p>
+    <p id="location-access-help">Your browser will ask for permission. Your location is used while this map is open and is not saved.</p>
+    <div class="location-access-actions"><button id="location-access-enable" type="button">Enable location</button><a href="user-dashboard.html">Back to Dashboard</a></div>
+  </dialog>
+  <aside id="location-prompt" class="map-location-prompt" role="alert" aria-labelledby="location-prompt-title" hidden>
+    <strong id="location-prompt-title">Confirm your location</strong>
+    <p id="location-prompt-message">Your location has not been confirmed yet. Use My location on the map before estimating your trip.</p>
+    <div class="location-prompt-actions"><button id="location-prompt-dismiss" type="button">Dismiss</button></div>
+  </aside>
+</body>
+</html>

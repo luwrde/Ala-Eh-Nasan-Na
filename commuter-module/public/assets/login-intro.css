@@ -1,0 +1,91 @@
+.login-scene { display: flex; flex-direction: column; min-height: 100svh; width: 100%; }
+.login-intro-pending { overflow: hidden; }
+.login-intro-pending .login-scene { visibility: hidden; }
+.passenger-login-page.intro-active { height: 100dvh; min-height: 0; overflow: hidden; }
+.intro-active .login-scene { position: fixed; z-index: 1001; inset: 0; min-height: 100dvh; overflow: hidden; background: var(--page-background); transform: translate3d(calc(100vw - var(--login-drag, 0px)), 0, 0); box-shadow: -14px 0 45px rgb(15 39 68 / 12%); will-change: transform; }
+.login-intro { --vehicle-width: clamp(144px, 15vw, 220px); --road-y: 64%; position: fixed; z-index: 1000; inset: 0; overflow: hidden; color: var(--blue-900); background: radial-gradient(ellipse at 90% 60%, #dbeafe 0, transparent 48%), var(--page-background); }
+.intro-brand { position: absolute; top: max(24px, env(safe-area-inset-top, 0px)); left: clamp(24px, 6vw, 100px); display: flex; align-items: center; gap: 12px; }
+.intro-brand img { width: 48px; height: 48px; filter: drop-shadow(0 4px 10px rgb(15 39 68 / 15%)); }
+.intro-brand strong { display: block; font-family: var(--font-display); font-size: 16px; }
+.intro-brand span { display: block; color: var(--muted); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.intro-copy { position: absolute; z-index: 1; top: 28%; left: 24px; right: 24px; text-align: center; opacity: clamp(0, calc(1 - var(--login-progress, 0) * 3), 1); }
+.intro-copy > span { display: block; margin-bottom: 14px; color: var(--blue-600); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.intro-copy h1 { margin-bottom: 16px; font-size: clamp(26px, 3.4vw, 44px); letter-spacing: -.04em; }
+.intro-copy p { color: var(--muted); font-size: clamp(13px, 1.3vw, 16px); }
+#login-intro-title:focus, .login-scene #login-title:focus { outline: none; }
+.intro-streetscape { position: absolute; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
+.intro-town-buildings { position: absolute; bottom: calc(100% - var(--road-y)); left: 0; right: 0; height: clamp(72px, 15vh, 170px); background: url('intro-streetscape.svg') repeat-x left bottom / auto 100%; }
+.intro-walker { --stroll-duration: 20s; --stroll-delay: -5s; --step-time: .65s; --gait-phase: -.18s; --stride: 17deg; --arm-swing: 18deg; --walk-start: -20px; --walk-end: 90px; --facing: 1; --person-scale: 1; --walk-lane: 9px; position: absolute; bottom: calc(100% - var(--road-y) + var(--walk-lane)); width: calc(clamp(15px, 2.1vh, 23px) * var(--person-scale)); color: #6f91b9; opacity: .9; animation: town-stroll var(--stroll-duration) linear var(--stroll-delay) infinite; }
+.intro-walker svg { display: block; width: 100%; overflow: visible; transform: scaleX(var(--facing)); }
+.intro-walker-one { left: 5%; --stroll-duration: 18s; --stroll-delay: -3.7s; --step-time: .57s; --gait-phase: -.13s; --stride: 19deg; --walk-start: -25px; }
+.intro-walker-two { left: 17%; color: #879f8d; --stroll-duration: 19s; --stroll-delay: -11.2s; --step-time: .72s; --gait-phase: -.91s; --walk-start: 65px; --walk-end: -55px; --facing: -1; --person-scale: .94; --walk-lane: 11px; }
+.intro-walker-three { left: 28%; color: #b59982; --stroll-duration: 22s; --stroll-delay: -7.4s; --step-time: .61s; --gait-phase: -.43s; --stride: 15deg; --arm-swing: 15deg; --walk-end: 125px; --person-scale: 1.06; }
+.intro-walker-four { left: 39%; color: #8393a9; --stroll-duration: 24s; --stroll-delay: -16.8s; --step-time: .8s; --gait-phase: -1.31s; --stride: 14deg; --arm-swing: 12deg; --walk-start: 50px; --walk-end: -78px; --facing: -1; --person-scale: 1.03; --walk-lane: 7px; }
+.intro-walker-five { left: 52%; color: #b4867e; --stroll-duration: 21s; --stroll-delay: -6.3s; --step-time: .67s; --gait-phase: -.77s; --stride: 20deg; --arm-swing: 17deg; --walk-start: -36px; --walk-end: 118px; --person-scale: .91; --walk-lane: 12px; }
+.intro-walker-six { left: 64%; color: #8d9e7b; --stroll-duration: 18.5s; --stroll-delay: -12.6s; --step-time: .76s; --gait-phase: -.32s; --stride: 16deg; --arm-swing: 14deg; --walk-start: 72px; --walk-end: -52px; --facing: -1; --person-scale: .97; }
+.intro-walker-seven { left: 78%; color: #7183ac; --stroll-duration: 17s; --stroll-delay: -4.1s; --step-time: .63s; --gait-phase: -1.05s; --stride: 21deg; --arm-swing: 20deg; --walk-start: -24px; --walk-end: 90px; --person-scale: 1.04; --walk-lane: 8px; }
+.intro-walker-eight { left: 91%; color: #a291af; --stroll-duration: 23s; --stroll-delay: -9.8s; --step-time: .69s; --gait-phase: -.59s; --stride: 15deg; --arm-swing: 16deg; --walk-start: 60px; --walk-end: -72px; --facing: -1; --person-scale: .95; --walk-lane: 11px; }
+.walker-leg, .walker-arm { transform-box: view-box; stroke: #52667b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.walker-leg { transform-origin: 14px 30px; animation: town-step var(--step-time) ease-in-out var(--gait-phase) infinite alternate; }
+.walker-arm { transform-origin: 14px 18px; stroke: #b88d73; stroke-width: 2.5; animation: town-arm var(--step-time) ease-in-out var(--gait-phase) infinite alternate; }
+.walker-leg-back, .walker-arm-back { animation-delay: calc(var(--gait-phase) - var(--step-time)); }
+.walker-leg-back { stroke: #718397; }
+@keyframes town-stroll { 0% { opacity: 0; transform: translateX(var(--walk-start)); } 8%, 92% { opacity: .9; } 100% { opacity: 0; transform: translateX(var(--walk-end)); } }
+@keyframes town-step { from { transform: rotate(calc(-1 * var(--stride))); } to { transform: rotate(var(--stride)); } }
+@keyframes town-arm { from { transform: rotate(var(--arm-swing)); } to { transform: rotate(calc(-1 * var(--arm-swing))); } }
+.intro-road { position: absolute; top: var(--road-y); left: 0; right: 0; height: 54px; border-top: 2px solid #cbdcf1; background: linear-gradient(#eff6ff, transparent); }
+.intro-road::after { content: ''; position: absolute; top: 25px; left: 0; right: 0; height: 2px; background: repeating-linear-gradient(to right, #cbdcf1 0 34px, transparent 34px 66px); }
+.intro-jeepney { position: absolute; z-index: 2; bottom: calc(100% - var(--road-y)); right: 24px; width: var(--vehicle-width); margin: 0; padding: 0; border: 0; background: transparent; color: var(--blue-600); cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; transform: translate3d(calc(-1 * var(--login-drag, 0px)), 0, 0); will-change: transform; }
+.intro-jeepney img { display: block; width: 100%; height: auto; pointer-events: none; animation: jeepney-ready 2.4s ease-in-out infinite; }
+.intro-jeepney { -webkit-tap-highlight-color: transparent; }
+.intro-jeepney::after { content: ''; position: absolute; top: 63%; left: calc(100% - 5px); width: 29px; height: 3px; border-radius: 3px; background: #64748b; opacity: var(--login-rope, 0); }
+.intro-jeepney:focus-visible { outline: 3px solid var(--blue-400); outline-offset: 9px; border-radius: 16px; }
+.intro-starting .intro-jeepney, .intro-driving .intro-jeepney { cursor: progress; }
+.intro-starting .intro-jeepney img { animation: jeepney-engine-start .12s linear 6; }
+.intro-driving .intro-jeepney img { animation: jeepney-cruise .24s ease-in-out infinite; }
+.intro-exhaust { position: absolute; left: calc(100% - 6px); bottom: 24%; pointer-events: none; }
+.intro-exhaust i { position: absolute; width: 7px; height: 7px; border-radius: 50%; background: #94a3b8; opacity: 0; }
+.intro-starting .intro-exhaust i, .intro-driving .intro-exhaust i { animation: jeepney-exhaust .75s ease-out infinite; }
+.intro-exhaust i:nth-child(2) { animation-delay: .18s; }
+.intro-exhaust i:nth-child(3) { animation-delay: .36s; }
+.intro-tap-cue { position: absolute; z-index: 3; top: calc(var(--road-y) - 145px); right: calc(24px + (var(--vehicle-width) / 2) - 12px); display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--blue-700); font-size: 11px; font-weight: 600; white-space: nowrap; transform: translateX(50%); animation: jeepney-tap-cue-bob 2.4s ease-in-out infinite; }
+.intro-tap-cue::before { content: '↓'; order: 2; color: var(--blue-500); font-size: 20px; line-height: 1; animation: jeepney-tap-hint 2s ease-out infinite; }
+.intro-starting .intro-tap-cue, .intro-driving .intro-tap-cue { opacity: 0; }
+.intro-caption { position: absolute; top: calc(var(--road-y) + 80px); left: 24px; right: 24px; text-align: center; color: var(--muted); font-size: 12px; opacity: clamp(0, calc(1 - var(--login-progress, 0) * 3), 1); }
+.intro-caption span { display: block; margin-top: 7px; color: var(--muted-lighter); font-size: 11px; }
+.intro-caption #intro-engine-status { margin-top: 0; color: var(--muted); font-size: 12px; }
+.intro-driving .login-scene, .intro-driving .intro-jeepney { transition: transform 2.4s cubic-bezier(.42, 0, .58, 1); }
+@keyframes jeepney-ready { 50% { transform: translateY(-3px); } }
+@keyframes jeepney-tap-cue-bob { 50% { transform: translateX(50%) translateY(-3px); } }
+@keyframes jeepney-engine-start { 25% { transform: translate(-1px, 1px) rotate(-.5deg); } 75% { transform: translate(1px, -1px) rotate(.5deg); } }
+@keyframes jeepney-cruise { 50% { transform: translateY(-1px); } }
+@keyframes jeepney-exhaust { 0% { transform: translate(0, 0) scale(.6); opacity: .5; } 100% { transform: translate(22px, -13px) scale(2.2); opacity: 0; } }
+@keyframes jeepney-tap-hint { 0% { box-shadow: 0 0 0 0 rgb(96 165 250 / 35%); } 100% { box-shadow: 0 0 0 9px rgb(96 165 250 / 0%); } }
+@media (max-width: 600px) {
+  .login-intro { --vehicle-width: 148px; --road-y: 62%; }
+  .intro-brand { left: 24px; }
+  .intro-brand strong { font-size: 14px; }
+  .intro-brand img { width: 42px; height: 42px; }
+  .intro-copy { top: 27%; }
+  .intro-copy h1 { max-width: 300px; margin: 0 auto 14px; }
+  .intro-copy p { max-width: 270px; margin: 0 auto; }
+  .intro-caption { top: calc(var(--road-y) + 66px); }
+}
+@media (max-height: 500px) {
+  .login-intro { --road-y: 72%; --vehicle-width: 130px; }
+  .intro-brand { top: 12px; }
+  .intro-brand img { width: 34px; height: 34px; }
+  .intro-copy { top: 25%; }
+  .intro-copy > span { margin-bottom: 6px; }
+  .intro-copy h1 { margin-bottom: 8px; font-size: 26px; }
+  .intro-caption { top: calc(var(--road-y) + 30px); }
+  .intro-caption #intro-keyboard-hint { display: none; }
+  .intro-town-buildings { height: min(18vh, 90px); }
+  .intro-walker { width: calc(13px * var(--person-scale)); bottom: calc(100% - var(--road-y) + 6px); }
+}
+@media (max-width: 360px) and (min-height: 501px) { .intro-copy { top: 23%; } }
+@media (prefers-reduced-motion: reduce) {
+  .login-intro *, .intro-active .login-scene { animation: none !important; transition: none !important; }
+  .intro-active .login-scene { visibility: hidden; transform: none; }
+  .intro-active .intro-jeepney { transform: none; }
+}

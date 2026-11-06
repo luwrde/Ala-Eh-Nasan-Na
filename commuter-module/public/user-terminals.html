@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script src="assets/language.js?v=1"></script>
+  <script src="assets/preferences.js?v=15"></script>
+  <link rel="stylesheet" href="assets/account-menu.css?v=1">
+  <script src="assets/account-menu.js?v=1" defer></script>
+  <title>Terminals &amp; Boarding Points | Ala-Eh Nasaan Na?</title>
+  <link rel="icon" href="assets/ala-eh-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css?v=20261101-dashboard">
+  <link rel="stylesheet" href="assets/user.css?v=20261101-dashboard">
+  <link rel="stylesheet" href="assets/dashboard.css?v=7">
+  <link rel="stylesheet" href="assets/terminals.css?v=8">
+  <link rel="stylesheet" href="assets/preferences.css?v=6">
+  <script src="assets/user.js?v=7" defer></script>
+  <script type="module" src="assets/terminals.js?v=14"></script>
+  <link rel="stylesheet" href="assets/drawer-navigation.css?v=2">
+</head>
+<body class="passenger-page has-sidebar passenger-dashboard-page drawer-navigation terminals-page terminals-directory-page">
+  <div class="app-layout">
+    <aside class="sidebar" id="passenger-sidebar" role="dialog" aria-modal="true" aria-label="Passenger navigation" aria-hidden="true" inert>
+      <div class="sidebar-header"><a class="sidebar-brand" href="user-map.html"><img class="sidebar-brand-mark" src="assets/ala-eh-logo.png" alt="" width="44" height="44"><span class="sidebar-brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span></a><button id="passenger-menu-close" type="button" aria-label="Close navigation"><svg class="dashboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <div class="sidebar-menu">
+          <a href="user-dashboard.html" class="sidebar-link"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="sidebar-link-text">Dashboard</span></a>
+          <a href="user-terminals.html" class="sidebar-link active" aria-current="page"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M8 10h2m4 0h2"/></svg><span class="sidebar-link-text"><span class="desktop-nav-label">Terminals &amp; Boarding Points</span><span class="mobile-nav-label">Terminals</span></span></a>
+          <a href="user-map.html" class="sidebar-link"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg><span class="sidebar-link-text">Map</span></a>
+          <a href="user-settings.html" class="sidebar-link"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="2" fill="currentColor" stroke="none"/></svg><span class="sidebar-link-text">Settings</span></a>
+        </div>
+        <div class="sidebar-footer"><button class="sidebar-logout" id="passenger-logout" type="button"><svg class="dashboard-icon sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h5M9 12h12m-5-5 5 5-5 5"/></svg><span class="sidebar-link-text">Log out</span></button></div>
+      </nav>
+    </aside>
+    <button id="passenger-backdrop" class="navigation-backdrop" type="button" tabindex="-1" aria-label="Close navigation" hidden></button>
+    <div class="app-content">
+      <header class="top-header">
+        <a class="header-brand" href="user-map.html" aria-label="Ala-Eh Nasaan Na? home"><img src="assets/ala-eh-logo.png" alt="" width="36" height="36"><span class="header-brand-name">Ala-Eh Nasaan Na?<span>Jeepney Locator</span></span></a>
+        <button class="mobile-menu-toggle" id="passenger-menu" type="button" aria-label="Open navigation" aria-controls="passenger-sidebar" aria-expanded="false"><span></span><span></span><span></span></button><button class="passenger-back-button" id="passenger-back" type="button" aria-label="Go back" title="Go back">&#8592;</button>
+        <h1 class="page-title">Terminals</h1>
+        <div class="passenger-profile" aria-label="Passenger profile">
+          <div class="passenger-profile-avatar" aria-hidden="true">P</div>
+          <div class="passenger-profile-info"><span class="passenger-profile-name">Passenger</span><span class="passenger-profile-role">Passenger</span></div>
+        </div>
+      </header>
+      <main class="site-main" id="main-content">
+        <section class="dashboard-wrap passenger-dashboard" aria-label="Terminals and boarding points">
+          <p class="terminal-result-count" id="terminal-result-count" role="status" aria-live="polite">Loading locations&hellip;</p>
+          <div class="terminal-notice terminal-error" id="directory-error" role="alert" hidden><p>We could not load the locations. Please try again.</p><button class="terminal-reset" id="retry-directory" type="button">Try again</button></div>
+          <div class="terminal-notice" id="directory-empty" hidden><h3>No boarding locations available</h3><p>Locations will appear here once they have been added.</p></div>
+          <div id="terminal-groups" aria-busy="true"></div>
+          <noscript><p class="terminal-notice">Enable JavaScript to view locations and terminal details.</p></noscript>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
