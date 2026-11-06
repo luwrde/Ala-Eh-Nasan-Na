@@ -730,7 +730,7 @@ HTML;
       <img class="footer-brand-mark" src="assets/admin/ala-eh-logo.png" alt="" aria-hidden="true">
       <span>Ala-Eh Nasaan Na?<small>Jeepney Locator</small></span>
     </a>
-    <span>Built for the road ahead. <a class="admin-footer-link" href="admin-login.php">Admin sign in</a></span>
+    <span>Built for the road ahead.</span>
   </div>
 </footer>
 </body>
