@@ -71,6 +71,14 @@ try {
     foreach (['commuter-accounts.sql','map-locations.sql','seat-availability.sql','trip-status.sql','driver-pickup-areas.sql'] as $file) $live->exec((string) file_get_contents(__DIR__ . '/../database/' . $file));
     foreach (glob(__DIR__ . '/../database/admin-migrations/*.sql') as $file) $live->exec((string) file_get_contents($file));
     $live->exec("ALTER TABLE commuter_accounts ADD phone VARCHAR(32) NULL, ADD account_status ENUM('active','suspended','deactivated') DEFAULT 'active'");
+    require_once __DIR__ . '/../app/database-session-handler.php';
+    $sessionHandler = new DatabaseSessionHandler();
+    $sessionId = bin2hex(random_bytes(16));
+    $assert($sessionHandler->write($sessionId, 'integration-session-data'), 'Shared session data must save');
+    $assert($sessionHandler->validateId($sessionId), 'Shared session ID must validate');
+    $assert($sessionHandler->read($sessionId) === 'integration-session-data', 'Shared session data must load');
+    $assert($sessionHandler->updateTimestamp($sessionId, 'integration-session-data'), 'Shared session expiry must refresh');
+    $assert($sessionHandler->destroy($sessionId) && !$sessionHandler->validateId($sessionId), 'Shared session must be destroyable');
     $presenceMigration = (string) file_get_contents(__DIR__ . '/../database/commuter-presence.sql');
     foreach (preg_split('/;\s*(?:\r?\n|$)/', $presenceMigration, -1, PREG_SPLIT_NO_EMPTY) as $statement) {
         $live->exec(trim($statement));
@@ -197,6 +205,20 @@ try {
     $r = $run(['page'=>'driver-documents.php','driver'=>1,'method'=>'GET']);
     $assert($r['status']===200 && $r['bytes']>1000, 'Driver document submission page must render');
     require_once __DIR__ . '/../app/driver-documents.php';
+    $databaseDocument = tempnam(__DIR__ . '/../storage', 'database-document-test-');
+    $documentTestPaths[] = $databaseDocument;
+    $databaseDocumentContents = '%PDF-1.4 persistent document';
+    file_put_contents($databaseDocument, $databaseDocumentContents);
+    $previousDocumentStorage = getenv('DRIVER_DOCUMENT_STORAGE');
+    putenv('DRIVER_DOCUMENT_STORAGE=database');
+    try {
+        store_driver_document($live, 1, 'driver_license', 'database-test.pdf', 'application/pdf', $databaseDocument);
+    } finally {
+        if ($previousDocumentStorage === false) putenv('DRIVER_DOCUMENT_STORAGE');
+        else putenv('DRIVER_DOCUMENT_STORAGE=' . $previousDocumentStorage);
+    }
+    $databaseStored = $live->query('SELECT storage_key, file_contents FROM driver_documents ORDER BY id DESC LIMIT 1')->fetch();
+    $assert($databaseStored['storage_key'] === null && $databaseStored['file_contents'] === $databaseDocumentContents, 'Vercel document storage must persist file contents in MySQL');
     $source = tempnam(__DIR__ . '/../storage', 'document-test-');
     $documentTestPaths[] = $source;
     $largePdf = '%PDF-1.4' . str_repeat('x', 8 * 1024 * 1024 - 8);

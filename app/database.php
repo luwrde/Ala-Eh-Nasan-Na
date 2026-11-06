@@ -26,11 +26,35 @@ function db(): PDO
     }
 
     $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $host, $port, $name);
-    $connection = new PDO($dsn, $user, $password, [
+    $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
+    ];
+    $caPath = trim((string) (getenv('DB_SSL_CA') ?: ''));
+    $caContents = getenv('DB_SSL_CA_BASE64');
+    if ($caContents !== false && $caContents !== '') {
+        $decodedCa = base64_decode($caContents, true);
+        if (!is_string($decodedCa) || $decodedCa === '') {
+            throw new RuntimeException('DB_SSL_CA_BASE64 must contain a valid base64-encoded CA certificate.');
+        }
+        $caPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'ala-eh-mysql-ca.pem';
+        if (file_put_contents($caPath, $decodedCa, LOCK_EX) !== strlen($decodedCa)) {
+            throw new RuntimeException('Unable to prepare the database CA certificate.');
+        }
+        @chmod($caPath, 0600);
+    }
+    if ($caPath !== '') {
+        if (!is_file($caPath) || !is_readable($caPath) || !defined('PDO::MYSQL_ATTR_SSL_CA')) {
+            throw new RuntimeException('The configured database CA certificate is unavailable.');
+        }
+        $options[constant('PDO::MYSQL_ATTR_SSL_CA')] = $caPath;
+        if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+            $options[constant('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')] = true;
+        }
+    }
+
+    $connection = new PDO($dsn, $user, $password, $options);
 
     return $connection;
 }

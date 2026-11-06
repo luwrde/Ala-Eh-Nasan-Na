@@ -48,6 +48,10 @@ This application features a professional design system with:
 6. Serve using your PHP web server, for example `php -S 127.0.0.1:8000 -t public` after configuring the environment.
 7. Apply `database/schema.sql`, then open `public/admin-login.php` and choose **Create the first admin account**. First-admin registration is closed automatically after one account has been created. Admin credentials are stored as password hashes and are separate from driver accounts. Alternatively, create the first admin from the project root with `php tools/create_admin.php admin@example.com`.
 
+## Deploy to Vercel
+
+The full PHP application can run on Vercel's beta Container Runtime using the root `Dockerfile`. Deployment requires an external production MySQL database; sessions and uploaded photos/documents are configured to persist in that database. Follow [docs/vercel-deployment.md](docs/vercel-deployment.md) for database migrations, Vercel environment variables, deployment, and verification.
+
 Open `public/admin-login.php` to sign in, then review pending applications in the admin dashboard. Approval and rejection actions require an authenticated admin session and CSRF token. The optional CLI setup command asks for the password twice; input may be visible in the terminal.
 
 Drivers can manage one jeepney profile at `public/jeepney-profile.php`. The signed-in driver's session determines ownership; the API never accepts a driver ID to select whose vehicle is edited. `GET /api/vehicle.php` returns the signed-in driver's profile, and `PUT /api/vehicle.php` accepts JSON containing `plate_number`, `capacity`, and `route_assignment`, with the page's CSRF token in the `X-CSRF-Token` header. Philippine plate formats such as `ABC 1234` and `123 ABC` are accepted. Each submission is stored as pending changes; verified details remain unchanged until an administrator approves the update in the vehicle review queue.

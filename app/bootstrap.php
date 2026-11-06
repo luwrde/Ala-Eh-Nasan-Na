@@ -21,7 +21,10 @@ function load_local_environment(): void
         'DB_NAME',
         'DB_USER',
         'DB_PASSWORD',
+        'DB_SSL_CA',
+        'DB_SSL_CA_BASE64',
         'SESSION_COOKIE_SECURE',
+        'SESSION_DRIVER',
     ];
     foreach ($values as $name => $value) {
         if (in_array($name, $allowedNames, true) && is_string($value) && getenv($name) === false) {
@@ -46,6 +49,16 @@ $secureCookie = !in_array($secureCookieSetting, ['false', '0', 'off'], true);
 ini_set('session.use_strict_mode', '1');
 ini_set('session.use_only_cookies', '1');
 ini_set('session.use_trans_sid', '0');
+require_once __DIR__ . '/database.php';
+$sessionDriver = strtolower((string) (getenv('SESSION_DRIVER') ?: 'files'));
+if ($sessionDriver === 'mysql') {
+    require_once __DIR__ . '/database-session-handler.php';
+    if (!session_set_save_handler(new DatabaseSessionHandler(), true)) {
+        throw new RuntimeException('Unable to configure the shared database session store.');
+    }
+} elseif ($sessionDriver !== 'files') {
+    throw new RuntimeException('SESSION_DRIVER must be either files or mysql.');
+}
 session_name('driver_portal_session');
 session_set_cookie_params([
     'lifetime' => 0,
@@ -56,7 +69,6 @@ session_set_cookie_params([
 ]);
 session_start();
 
-require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/vehicles.php';
 
@@ -117,6 +129,17 @@ function driver_photo_file(int $driverId): ?string
     usort($photos, static fn (string $left, string $right): int => filemtime($right) <=> filemtime($left));
 
     return $photos[0] ?? null;
+}
+
+function driver_photo_database_version(int $driverId): ?string
+{
+    $query = db()->prepare(
+        'SELECT UNIX_TIMESTAMP(updated_at) FROM profile_photos WHERE driver_id = :driver_id LIMIT 1'
+    );
+    $query->execute(['driver_id' => $driverId]);
+    $version = $query->fetchColumn();
+
+    return $version === false ? null : (string) $version;
 }
 
 function require_driver(): array
@@ -180,10 +203,18 @@ function page_start(string $title, string $page = ''): void
         $profileName = h((string) current_driver()['full_name']);
         $profileRole = current_driver()['verification_status'] === 'verified' ? 'Verified driver' : 'Driver';
         $profileInitial = h(mb_strtoupper(mb_substr((string) current_driver()['full_name'], 0, 1)));
-        $profilePhoto = driver_photo_file((int) current_driver()['id']);
-        $profileAvatar = $profilePhoto === null
-            ? $profileInitial
-            : '<img src="driver-photo.php?v=' . rawurlencode((string) filemtime($profilePhoto)) . '" alt="" loading="lazy">';
+        $driverId = (int) current_driver()['id'];
+        if (strtolower((string) (getenv('PROFILE_PHOTO_STORAGE') ?: 'filesystem')) === 'database') {
+            $photoVersion = driver_photo_database_version($driverId);
+            $profileAvatar = $photoVersion === null
+                ? $profileInitial
+                : '<img src="admin-profile-photo.php?v=' . rawurlencode($photoVersion) . '" alt="" loading="lazy">';
+        } else {
+            $profilePhoto = driver_photo_file($driverId);
+            $profileAvatar = $profilePhoto === null
+                ? $profileInitial
+                : '<img src="driver-photo.php?v=' . rawurlencode((string) filemtime($profilePhoto)) . '" alt="" loading="lazy">';
+        }
         $logoutToken = csrf_field();
         $headerProfile = <<<HTML
       <div class="header-account">

@@ -51,20 +51,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 || $imageInfo[0] * $imageInfo[1] > 16000000) {
                 $errors['photo'] = 'Use a JPEG, PNG, or WebP image up to 5 MB.';
             } else {
-                $photoDirectory = dirname(__DIR__) . '/storage/driver-photos';
-                $photoName = $driverId . '-' . bin2hex(random_bytes(16)) . '.' . $extensions[$mimeType];
-                $photoPath = $photoDirectory . DIRECTORY_SEPARATOR . $photoName;
-                if (!move_uploaded_file($upload['tmp_name'], $photoPath)) {
-                    throw new RuntimeException('Unable to store the uploaded driver profile photo.');
-                }
+                if (strtolower((string) (getenv('PROFILE_PHOTO_STORAGE') ?: 'filesystem')) === 'database') {
+                    $imageContents = file_get_contents($upload['tmp_name']);
+                    if ($imageContents === false || $imageContents === '') {
+                        throw new RuntimeException('Unable to read the uploaded driver profile photo.');
+                    }
+                    $savePhoto = db()->prepare(
+                        'INSERT INTO profile_photos (driver_id, mime_type, image_data)
+                         VALUES (:driver_id, :mime_type, :image_data)
+                         ON DUPLICATE KEY UPDATE mime_type = VALUES(mime_type), image_data = VALUES(image_data)'
+                    );
+                    $savePhoto->bindValue(':driver_id', $driverId, PDO::PARAM_INT);
+                    $savePhoto->bindValue(':mime_type', $mimeType, PDO::PARAM_STR);
+                    $savePhoto->bindValue(':image_data', $imageContents, PDO::PARAM_LOB);
+                    $savePhoto->execute();
+                } else {
+                    $photoDirectory = dirname(__DIR__) . '/storage/driver-photos';
+                    $photoName = $driverId . '-' . bin2hex(random_bytes(16)) . '.' . $extensions[$mimeType];
+                    $photoPath = $photoDirectory . DIRECTORY_SEPARATOR . $photoName;
+                    if (!move_uploaded_file($upload['tmp_name'], $photoPath)) {
+                        throw new RuntimeException('Unable to store the uploaded driver profile photo.');
+                    }
 
-                $oldPhotos = glob($photoDirectory . DIRECTORY_SEPARATOR . $driverId . '-*');
-                if ($oldPhotos !== false) {
-                    foreach ($oldPhotos as $oldPhoto) {
-                        if ($oldPhoto !== $photoPath && is_file($oldPhoto)
-                            && preg_match('/\A' . $driverId . '-[a-f0-9]{32}\.(?:jpg|png|webp)\z/', basename($oldPhoto)) === 1
-                            && !unlink($oldPhoto)) {
-                            error_log('Unable to remove a replaced driver profile photo.');
+                    $oldPhotos = glob($photoDirectory . DIRECTORY_SEPARATOR . $driverId . '-*');
+                    if ($oldPhotos !== false) {
+                        foreach ($oldPhotos as $oldPhoto) {
+                            if ($oldPhoto !== $photoPath && is_file($oldPhoto)
+                                && preg_match('/\A' . $driverId . '-[a-f0-9]{32}\.(?:jpg|png|webp)\z/', basename($oldPhoto)) === 1
+                                && !unlink($oldPhoto)) {
+                                error_log('Unable to remove a replaced driver profile photo.');
+                            }
                         }
                     }
                 }
@@ -119,10 +135,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $notice = (string) ($_SESSION['driver_profile_notice'] ?? $notice);
 unset($_SESSION['driver_profile_notice']);
-$profilePhoto = driver_photo_file($driverId);
-$profilePhotoUrl = $profilePhoto === null
-    ? null
-    : 'driver-photo.php?v=' . rawurlencode((string) filemtime($profilePhoto));
+if (strtolower((string) (getenv('PROFILE_PHOTO_STORAGE') ?: 'filesystem')) === 'database') {
+    $photoVersion = driver_photo_database_version($driverId);
+    $profilePhotoUrl = $photoVersion === null
+        ? null
+        : 'admin-profile-photo.php?v=' . rawurlencode($photoVersion);
+} else {
+    $profilePhoto = driver_photo_file($driverId);
+    $profilePhotoUrl = $profilePhoto === null
+        ? null
+        : 'driver-photo.php?v=' . rawurlencode((string) filemtime($profilePhoto));
+}
 
 page_start('My profile', 'driver-profile');
 ?>
