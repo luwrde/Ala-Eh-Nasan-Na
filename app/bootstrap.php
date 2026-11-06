@@ -2,6 +2,12 @@
 declare(strict_types=1);
 
 ini_set('display_errors', '0');
+ini_set('expose_php', '0');
+
+// Prevent account pages and authenticated responses from being retained by shared caches.
+header_remove('X-Powered-By');
+header('Cache-Control: no-store, private');
+header('Pragma: no-cache');
 
 function load_local_environment(): void
 {
